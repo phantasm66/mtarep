@@ -1,0 +1,67 @@
+# mtarep main configuration file
+
+error_log: /var/log/bsd/mtarep_errors.log
+redis_server: 
+snds_key: 
+maillog_path: /var/log/maillog
+ssh_key: 
+ssh_user: mtarep
+
+mta_map:
+ - 
+
+rbls:
+ - b.barracudacentral.org
+ - bl.mailspike.net
+ - bl.score.senderscore.com
+ - bl.spamcannibal.org
+ - bl.spamcop.net
+ - block.stopspam.org
+ - cbl.abuseat.org
+ - cidr.bl.mcafee.com
+ - db.wpbl.info
+ - dnsbl-1.uceprotect.net
+ - dnsbl-2.uceprotect.net
+ - dnsbl-3.uceprotect.net
+ - multi.surbl.org
+ - psbl.surriel.com
+ - ubl.unsubscore.com
+ - zen.spamhaus.org
+
+block_strings:
+  aol: 'http://postmaster.info.aol.com/errors/5'
+  att: 'For_information_see_http://att.net/blocks'
+  hotmail: 'http://mail.live.com/mail/troubleshooting.aspx#errors'
+  comcast: 'postmaster.comcast.net/smtp-error-codes.php#BL0'
+  cox: 'Error Code: CXBL'
+  earthlink: 'earthlink.net/block'
+  verizon: 'http://www.verizon.net/whitelist'
+  gmail: 'http://www.google.com/mail/help/bulk_mail.html'
+
+removal_links:
+  aol: 'http://postmaster.aol.com/SupportRequest.Other.php'
+  att: 'http://rbl.att.net/cgi-bin/rbl/block_admin.cgi'
+  hotmail: 'https://support.msn.com/eform.aspx?productKey=edfsmsbl2&ct=eformts&scrx=1'
+  comcast: 'http://postmaster.comcast.net/block-removal-request.html'
+  cox: 'http://postmaster.cox.net/confluence/display/postmaster/Contact+US+Form'
+  earthlink: 'http://support.earthlink.net/articles/email/email-blocked-by-earthlink.php'
+  verizon: 'https://confluence.bluestatedigital.com/display/~jwebb/Verizon+Block+Removal+Email+Template'
+  gmail: 'http://support.google.com/mail/bin/request.py?&contact_type=msgdelivery'
+  zen.spamhaus.org: 'http://www.spamhaus.org/query/ip/'
+  bl.spamcop.net: 'http://www.spamcop.net/w3m?action=checkblock&ip='
+  b.barracudacentral.org: 'http://www.barracudacentral.org/lookups'
+  bl.mailspike.net: 'http://mailspike.org/anubis/lookup.html'
+  bl.spamcannibal.org: 'http://www.spamcannibal.org/cannibal.cgi'
+  bl.spameatingmonkey.net: 'http://spameatingmonkey.com/lookup.html'
+  block.stopspam.org: 'http://stopspam.org/rblcheck/index.php'
+  cbl.abuseat.org: 'http://cbl.abuseat.org/lookup.cgi'
+  dnsbl-1.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
+  dnsbl-2.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
+  dnsbl-3.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
+  multi.surbl.org: 'http://www.surbl.org/surbl-analysis'
+  psbl.surriel.com: 'http://psbl.org/listing'
+  all.spamrats.com: 'http://www.spamrats.com/lookup.php?ip='
+  cidr.bl.mcafee.com: 'http://www.mcafee.com/threat-intelligence/ip/default.aspx?ip='
+  db.wpbl.info: 'http://www.wpbl.info/cgi-bin/detail.cgi?ip='
+  ubl.unsubscore.com: 'http://ls.lashback.com/blacklist/'
+

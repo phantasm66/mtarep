@@ -1,0 +1,10 @@
+chdir: /home/mtarep
+servers: 1
+port: 80
+address: 10.0.199.17
+timeout: 30
+wait: 30
+log: /var/log/thin.log
+max_conns: 1024
+environment: production
+daemonize: true

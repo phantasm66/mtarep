@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>MTA Reputation Statistics & Tools Dashboard</title>
+    <script src="/lib/jquery-1.8.3.min.js" type="text/javascript"></script>
+    <script src="/lib/bootstrap/js/bootstrap.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap-tooltip.js"></script>
+    <script type="text/javascript" src="/lib/tablesorter/js/jquery.tablesorter.js"></script>
+    <script>
+      $(function(){
+        $("table#main-table").tablesorter({ sortList: [[0,0]] });
+      });
+    </script>
+    <script type='text/javascript'>
+      $(document).ready(function () {
+        if ($("[rel=tooltip]").length) {
+          $("[rel=tooltip]").tooltip();
+        }
+      });
+    </script>
+    <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css">
+  </head>
+
+  <body style="padding-top: 50px;">
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand"><strong>MTArep - Reputation Reporting & Statistics Dashboard</strong></a>
+          <ul class="nav pull-right">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="/lib/bootstrap/img/list.png"></a>
+              <ul class="dropdown-menu">
+                <li><a href="/" style="color: #cccccc;">Home</a></li>
+                <li><a href="/help" style="color: #cccccc;">Help</a></li>
+                <li><a href="/graphs" style="color: #cccccc;">Graphs</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span1"></div>
+        <div class="span10">
+        <br>
+        <br>
+        <table id="main-table" class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th style="text-align: center; background: #ffffff; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By MTA Name">host</a></th>
+              <th style="text-align: center; background: #ffffff; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Return Path Sender Score">sender score</a></th>
+              <th style="text-align: center; background: #ffffff; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Filter Color Status">snds filtering</a></th>
+              <th style="text-align: center; background: #ffffff; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Total Trap Counts">snds traps</a></th>
+              <th style="text-align: center; background: #ffffff; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Provider Blocks">provider blocks</a></th>
+              <th style="text-align: center; background: #ffffff; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By RBL Listings">rbl listings</a></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @hash.each_pair do |k,v| %>
+              <% @color = v.values_at('sndscolor')[0] %>
+              <% @listings = v.values_at('listings')[0] %>
+              <% @pblocks = v.values_at('provblocks')[0] %>
+              <% @score = v.values_at('senderscore')[0] %>
+              <% if @score == 'no score' %>
+                <% @score = 100 %>
+              <% else %>
+                <% @score = @score.to_i %>
+              <% end %>
+              <% @traps = v.values_at('sndstraps')[0] %>
+              <% if @traps == 'no data' %>
+                <% @traps = 0 %>
+              <% else %>
+                <% @traps = @traps.to_i %>
+              <% end %>
+
+              <% if @score < 60 %>
+                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% elsif @traps >= 12 %>
+                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% elsif @color == 'red' %>
+                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% elsif @listings =~ /(spamhaus|spamcop)/ %>
+                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% elsif @pblocks !~ /(no\sblocks|maillog\sparser\serror)/ %>
+                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% elsif @color == 'yellow' %>
+                <tr class="warning">
+              <% elsif @score < 70 %>
+                <tr class="warning">
+              <% else %>
+                <tr class="success">
+              <% end %>
+
+              <% @removal_links = @redis.hgetall('removal_links') %>
+              <% @provider = '' %>
+              <% v.each_pair do |key,val| %>
+                <td style="text-align: center;">
+                <% if key =~ /(provblocks|listings)/ %>
+                  <% @arr = val.split(',') %>
+                  <% @count = @arr.count %>
+                  <% @contact_email = 'platform@bluestatedigital.com' %>
+                  <% @modid = k.gsub('.','') %>
+                  <% @x = 0 %>
+                  <% @arr.each do |str| %>
+                    <% @x += 1 %>
+                    <% if str =~ /(no\sblocks|error|unlisted)/ %>
+                      <%=str%>
+                    <% else %>
+                      <% if key == 'provblocks' %>
+                        <% @provider = str.split(':')[0] %>
+                        <% @logline = @redis.hgetall(str.split(':')[1]) %>
+                        <a href="#<%=@provider+@modid%>Modal" data-toggle="modal" style="color: red;"><b><u><%=@provider%></u></b></a>
+                        <div id="<%=@provider+@modid%>Modal" class="modal hide fade">
+                          <div class="modal-header" style="background-color: #82B0E1;">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h3 style="color: white;"><%=@provider.capitalize%> Block Removal Info</h3>
+                          </div>
+                          <div class="modal-body">
+                            <% if @provider == 'verizon' %>
+                              <p><strong>Send an email to<br>
+                              <h4>whitelist@verizononline.net and abuse@verizon.net</strong></h4><br>
+                              <u><strong>Subject: </strong>IP Block Removal Request For <%=k%><br></u>
+                              <br>
+                              BEGIN MESSAGE -------
+                              <br>
+                              <%=k%> is receiving the following SMTP response from Verizon mail servers:
+                              <br>
+                              <br>
+                              <font face="monaco"><%=@logline.to_a.flatten[1]%></font>
+                              <br>
+                              <br>
+                              &nbsp;&nbsp;- All recipients have opted in to receive our client's email<br>
+                              &nbsp;&nbsp;- All of our IPs have proper forward/reverse DNS and SPF records<br>
+                              &nbsp;&nbsp;- All of our IPs sign each message with a verifiable DKIM signtaure<br>
+                              <br>
+                              We are not an open relay, nor do we receive connections to our sending IPs
+                              <br>
+                              <br>
+                              I would like to request a removal of the IP block against <%=k%><br>
+                              END MESSAGE -------<br></p>
+                            <% else %>
+                              <h4><strong>The log entry below may be required for a removal request</strong></h4>
+                              <% if @provider == 'hotmail' %>
+                                <em>This wiki will help you complete the hotmail removal form:</em><br>
+                                <a href="https://confluence.bluestatedigital.com/display/~jwebb/Hotmail+MTA+Block+Removal+Request+Form+Steps" target="_blank">hotmail removal form steps</a>
+                                <br>
+                                <br>
+                              <% elsif @provider == 'aol' %>
+                                <em>This wiki will help you complete the aol removal form:</em><br>
+                                <a href="https://confluence.bluestatedigital.com/display/tech/AOL+MTA+Block+Removal+Request+Form+Steps" target="_blank">aol removal form steps</a>
+                                <br>
+                                <br>
+                              <% end %>
+                              <p><font face="monaco"><%=@logline.to_a.flatten[1]%></font></p>
+                              <p><u>Blocked IP</u><br>
+                              <strong style="color: red;"><%=k%></strong></p>
+                            <% end %>
+                            <% str = @provider %>
+                      <% else %>
+                        <% @authority = @link = str.split[0] %>
+                        <% @authority = 'Spamhaus' if @authority =~ /spamhaus/ %>
+                        <% @authority = 'Spamcop' if @authority =~ /spamcop/ %>
+                        <% @authority = 'Spamrats' if @authority =~ /spamrats/ %>
+                        <% @authority = 'Mcafee' if @authority =~ /mcafee/ %>
+                        <% @authority = 'WPBL' if @authority =~ /wpbl/ %>
+                        <% @authority = 'Barracuda' if @authority =~ /barracuda/ %>
+                        <% @authority = 'Mailspike' if @authority =~ /mailspike/ %>
+                        <% @authority = 'SpamCannibal' if @authority =~ /spamcannibal/ %>
+                        <% @authority = 'SpamEatingMonkey' if @authority =~ /spameatingmonkey/ %>
+                        <% @authority = 'StopSpam!' if @authority =~ /stopspam/ %>
+                        <% @authority = 'CBL' if @authority =~ /abuseat/ %>
+                        <% @authority = 'UCE-Protect' if @authority =~ /uceprotect/ %>
+                        <% @authority = 'HostKarma' if @authority =~ /hostkarma/ %>
+                        <% @authority = 'SURBL' if @authority =~ /surbl/ %>
+                        <% @authority = 'PSBL' if @authority =~ /surriel/ %>
+                        <% @authority = 'Unsubscore' if @authority =~ /unsubscore/ %>
+                        <a href="#<%=@authority+@modid%>Modal" data-toggle="modal" style="color: red;"><b><u><%=@link%></u></b></a>
+                        <div id="<%=@authority+@modid%>Modal" class="modal hide fade">
+                          <div class="modal-header" style="background-color: #82B0E1;">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h3 style="color: white;"><%=@authority%> Block Removal Info</h3>
+                          </div>
+                          <div class="modal-body">
+                            <% if @authority == 'Spamhaus' %>
+                              <p><a style="color: red;" href="https://confluence.bluestatedigital.com/display/~jwebb/Spamhaus+Emergency+Procedures" target="_blank"><u>Spamhaus Emergency Procedures</u></a></p>
+                              <a href=<%=@removal_links[str]+k%> target="_blank"><u>&#8226;Spamhaus Listing Lookup/Info&#8226;</u></a>
+                              <br>
+                              <br>
+                            <% elsif @authority == 'Spamcop' %>
+                              <p>Please visit <a href=<%=@removal_links[str]+k%> target="_blank"><u>spamcop</u></a> to view the details of the listing for ip address <strong style="color: red;"><%=k%></strong>.
+                              <br>
+                              <br>
+                              Spamcop listings expire within 12 to 24 hours. It's fairly difficult to convince them to remove the listing earlier than it's expiration, but you should try anyway. Spamcop listings result in rejections at AT&T operated domains (there are many) and several non-major domains. Use <strong><%=@contact_email%></strong> for our contact address.</p>
+                            <% elsif @authority =~ /(Spamrats|Mcafee|WPBL)/ %>
+                              <p>Please visit <a href=<%=@removal_links[str]+k%> target="_blank"><u><%=@authority.downcase%></u></a> to view details and submit a removal request for ip address <strong style="color: red;"><%=k%></strong>. Use <strong><%=@contact_email%></strong> for our contact address.</p>
+                            <% else %>
+                              <p>Please lookup ip address <strong style="color: red;"><%=k%></strong> on the <a href=<%=@removal_links[str]%> target="_blank"><u><%=@authority.downcase%></u></a> list query page and submit a removal request. Use <strong><%=@contact_email%></strong> for our contact address.</p>
+                            <% end %>
+                          <% str = @authority.downcase %>
+                      <% end %>
+                      <% @blockquery = @redis.get('ack-'+str+'-'+k) %>
+                      <% if @blockquery.nil? %>
+                        <% if str =~ /^(aol|hotmail|comcast|cox|earthlink|verizon|gmail|att\/sbc)$/ %>
+                          <a href=<%=@removal_links[@provider]%> target="_blank"><strong><u>&#8226;click here to initiate a removal request&#8226;</u></strong></a>
+                          <br>
+                          <p>Use <strong><%=@contact_email%></strong> for our contact address.</p>
+                          <br>
+                          <br>
+                        <% end %>
+                        <p>Please click the 'Acknowledge' button once you have requested a removal<br>
+                           This will let MTA&#8226;Rep know that the removal process has been intiated</p>
+                        </div>
+                        <div class="modal-footer">
+                          <form action="/ack" method="post">
+                            <button type="submit" class="btn btn-inverse" name="ack" value=<%='ack-'+str+'-'+k%>>Acknowledge</button>
+                          </form>
+                      <% else %>
+                        <p><strong style="color: red;">A removal request has already been submitted</strong><br>
+                           Acknowledged by <strong><%=@blockquery.split[0]%></strong> at <strong><%=@blockquery.split[1..2].join(' ')%></strong></p>
+                      <% end %>
+                      </div>
+                    </div>
+                    <% end %>
+                    <% if @x < @count %>
+                      <br>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <%=val.gsub(',',"<br>")%>
+                <% end %>
+                </td>
+              <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        </div>
+        <div class="span1"></div>
+      </div>
+    </div>
+  </div>
+
+  </body>
+</html>
