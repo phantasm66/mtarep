@@ -2,7 +2,7 @@
 
 error_log: /var/log/mtarep_errors.log
 redis_server: redis.example.com
-snds_key: c3499c2-729730a7-f807efb8-676a92d-cb6f8a3f8f # this key is fake and does nothing
+snds_key: c3499c2-729730a7-f807efb8-676a92d-cb6f8a3f8f  #this key is a non functional example!
 maillog_path: /var/log/maillog
 ssh_key: /home/mtarep/.ssh/mtarep.private
 ssh_user: mtarep
