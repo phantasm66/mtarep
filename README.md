@@ -1,6 +1,6 @@
 MTAREP
 ================================
-Collect and report on your mail server reputation, deliverability and rbl statistics.
+Collect and report on your mail servers' reputation, deliverability and rbl statistics.
 
 Requirements:
 -------------
