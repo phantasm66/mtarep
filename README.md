@@ -1,7 +1,6 @@
 MTAREP
 ================================
-
-Collect, report and alert on various MTA reputation and rbl statistics.
+Collect and report on your mail server reputation, deliverability and rbl statistics.
 
 Requirements:
 -------------
