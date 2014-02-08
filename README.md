@@ -22,6 +22,10 @@ All the data is collected and inserted into a redis data store whenever the coll
 
 When a provider block or rbl cell contains a listing, it becomes clickable. For provider blocks, when you click a block link a modal appears containing the most recent smtp rejection message from your server's maillog (location and access are configurable in the mtarep-conf.yml file), as well details about the listing and a direct link to that provider's block removal form or instructions. The same scenario occurs for rbl listings as well minus the maillog info, because mtarep queries rbl lists directly over dns (you can customize the list of rbls queried in the mtarep-conf.yml file as well).
 
+WebUI screenshot:
+
+![Alt text](mtarep-webui-example.png?raw=true)
+
 Please adjust the included config.ru, mtarep-thin.yml and mtarep-conf.yml config files accordingly.
 
 NOTE: The mta_map array config line in mtarep-conf.yml can take a single fqdn that resolves to multiple A records (ie: a group of MTA IP addresses) or you can just list out your MTA public fqdns in the mta_map YAML list array.
