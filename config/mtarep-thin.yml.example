@@ -1,7 +1,7 @@
-chdir: /home/mtarep
+chdir: /etc/mtarep
 servers: 1
 port: 80
-address: 10.0.199.17
+address: 10.20.30.40
 timeout: 30
 wait: 30
 log: /var/log/thin.log

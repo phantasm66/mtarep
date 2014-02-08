@@ -1,14 +1,19 @@
-# mtarep main configuration file
+# mtarep example configuration file
 
-error_log: /var/log/bsd/mtarep_errors.log
-redis_server: 
-snds_key: 
+error_log: /var/log/mtarep_errors.log
+redis_server: redis.example.com
+snds_key: c3499c2-729730a7-f807efb8-676a92d-cb6f8a3f8f # this key is fake and does nothing
 maillog_path: /var/log/maillog
-ssh_key: 
+ssh_key: /home/mtarep/.ssh/mtarep.private
 ssh_user: mtarep
 
 mta_map:
- - 
+ - mailer1.example.com
+ - mailer2.example.com
+ - mailer3.example.com
+ - mailer4.example.com
+ - mailer5.example.com
+ - mailer6.example.com
 
 graph_domains:
  - yahoo.com
@@ -16,7 +21,6 @@ graph_domains:
  - gmail.com
  - aol.com
  - comcast.net
-
 
 rbls:
  - b.barracudacentral.org
