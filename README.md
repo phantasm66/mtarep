@@ -33,7 +33,7 @@ The included graphing will require you to configure a few things outside the sco
 
 Sent, bounced, expired and feedback loop count graphs can be easily configured for the domains of your choosing via the 'graph_domains' list array section in the included mtarep-conf.yml configuration file. The graphing is provided by the [HighCharts JS API](http://www.highcharts.com/products/highcharts). The individual bar graphs can be removed from view to allow more granular detail on the remaining bar graphs. This is particularly helpful if your sent total bar graph obfuscates the shit out of the bounce, fbl or expired graphs (deliverability hint: you want this to happen!).
 
-The graph data is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is *not* collected by mtarep. However, it will be calculated and rendered if the appropriate data exists in the same redis db used by mtarep. The web ui will automatically calculate any HINCRBY (key field increment) keys in your redis backend in the format of:
+The graph data is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, it will be calculated and rendered if the appropriate data exists in the same redis db used by mtarep. The web ui will automatically calculate any HINCRBY (key field increment) keys in your redis backend in the format of:
 
     20140208:expired"
     20140208:fbl"
