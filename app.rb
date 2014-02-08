@@ -34,13 +34,8 @@ before do
   @redis = redis_connection(config['redis_host'])
   mta_map(config['mta_map']).each_pair {|ip, mta| @mta_keys << ip}
 
-  graph_domains = %w{
-    yahoo.com
-    hotmail.com
-    gmail.com
-    aol.com
-    comcast.net
-  }
+  graph_domains = config['graph_domains']
+
   date = Time.now.to_s.split[0].gsub('-', '')
 
   fbl = []

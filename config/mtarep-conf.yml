@@ -10,6 +10,14 @@ ssh_user: mtarep
 mta_map:
  - 
 
+graph_domains:
+ - yahoo.com
+ - hotmail.com
+ - gmail.com
+ - aol.com
+ - comcast.net
+
+
 rbls:
  - b.barracudacentral.org
  - bl.mailspike.net
