@@ -4,7 +4,6 @@ $: << 'lib' unless $:.include?('lib')
 $: << 'lib/collector' unless $:.include?('lib/collector')
 
 require 'runner'
-require 'config_parser'
 require 'yaml'
 
 config = YAML.load_file('config/mtarep-conf.yml')
