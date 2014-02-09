@@ -11,7 +11,7 @@ require 'redis_worker'
 require 'hosts'
 
 configure do
-  set :public_folder, Proc.new { File.join(root, 'static') }
+  set :public_folder, Proc.new { File.join(root, 'vendor') }
   set :environment, :production
   set :show_exceptions, true
   enable :sessions, :logging
