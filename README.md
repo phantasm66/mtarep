@@ -97,7 +97,12 @@ The ssh username associated with the 'ssh_key' you specified above.
 
 **http_auth_file**
 
-The absolute path to your mtarep app's http authentication file. This is used for authentcating login access credentials (username/password) to the mtarep web interface. The format of this file must be 'username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM='. Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
+The absolute path to your mtarep app's http authentication file. This is used for authentcating login access credentials (username/password) to the mtarep web interface.
+
+The format of this file must be:
+    'username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM='
+
+Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
 
 **mta_map**
 
@@ -107,9 +112,7 @@ A YAML array collection is used when you want mtarep to use the same fqdn/hostna
 
 The YAML hash collection support for this configuration setting should be used if you ssh to your MTAs using an internal hostname or alias that is different from the host's public fqdn hostname.
 
-  **Example**
-
-If you have an MTA with a public HELO hostname of mta1.mydomain.com and you also access the MTA with ssh using that same hostname, then you want to use a YAML array collection here. If you have an MTA with a public HELO hostname of mta1.mydomain.com but you ssh to the MTA using the shortname 'mta1', then you want to use a YAML hash collection here (mta1: 'mta1.mydomain.com', etc..).
+For example, if you have an MTA with a public HELO hostname of mta1.mydomain.com and you also access the MTA with ssh using that same hostname, then you want to use a YAML array collection here. If you have an MTA with a public HELO hostname of mta1.mydomain.com but you ssh to the MTA using the shortname 'mta1', then you want to use a YAML hash collection here (mta1: 'mta1.mydomain.com', etc..).
 
 **graph_domains** (optional)
 
