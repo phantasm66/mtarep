@@ -55,7 +55,7 @@ These keys contain an incrementing total for each unique domain that has been se
 
 The exact redis operation is HINCRBY (http://redis.io/commands/hincrby).
 
-Using the redis rubygem, you could do something like this to increment a counter for each bounced email to gmail.com:
+Using the redis rubygem you could do the following to increment a counter for each bounced email to gmail.com:
 ```ruby
 key = [Time.now.strftime("%Y%m%d")]
 key << 'bounced'
@@ -71,32 +71,32 @@ All configuration of mtarep is managed from the app's main YAML configuration fi
 
 Individual mtarep-conf.yml configuration settings:
 
-**error_log**
----
+**_error_log_**
+
 The absolute path to your main mtarep error log file. All directories in the path must already exist. If the error log file does not exist, it will be created.
 
-**redis_server**
----
+**_redis_server_**
+
 The DNS resolvable hostname of your redis server. Your redis server will be accessed over the default port of 6379 and the primary 'db0' database. Currently non standard ports and redis databases are not supported.
 
-**snds_key**
----
+**_snds_key_**
+
 Your organization's microsoft 'smart network data services' (SNDS) data access key. If you do not use microsoft's SNDS, you should signup here: https://postmaster.live.com/snds/.
 
-**maillog_path**
----
+**_maillog_path_**
+
 The absolute path to your current postfix mail log file on each postfix MTA that you are using mtarep to report major provider rejections/blocks for. Currently only postfix log formats are supported.
 
-**ssh_key**
----
+**_ssh_key_**
+
 The absolute path to the ssh key file you want to access your remote postfix MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
 
-**ssh_user**
----
+**_ssh_user_**
+
 The ssh username associated with the 'ssh_key' you specified above.
 
-**http_auth_file**
----
+**_http_auth_file_**
+
 The absolute path to your mtarep app's http authentication file. This is used for authentcating login access credentials (username/password) to the mtarep web interface.
 
 The format of this file must be:
@@ -105,8 +105,8 @@ The format of this file must be:
 ```
 Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
 
-**mta_map**
----
+**_mta_map_**
+
 This setting can contain either a YAML array collection or a YAML hash collection.
 
 A YAML array collection is used when you want mtarep to use the same fqdn/hostname to lookup public fqdn/hostname/ip reputation data as well as the fqdn/hostname to ssh to for mail log parsing (ESP and ISP (provider) SMTP rejection log entries). Do not use this type of map if you ssh to your MTAs using a different fqdn/hostname or host alias from it's public mail fqdn/hostname.
@@ -115,24 +115,24 @@ The YAML hash collection support for this configuration setting should be used i
 
 For example, if you have an MTA with a public HELO hostname of mta1.mydomain.com and you also access the MTA with ssh using that same hostname, then you want to use a YAML array collection here. If you have an MTA with a public HELO hostname of mta1.mydomain.com but you ssh to the MTA using the shortname 'mta1', then you want to use a YAML hash collection here (mta1: 'mta1.mydomain.com', etc..).
 
-**graph_domains** (optional)
----
+**_graph_domains_** (optional)
+
 The domains that you want mtarep to render sent, bounced, feedback-loop and expired message counts for.
 
-**rbls**
----
+**_rbls_**
+
 A YAML array collection of RBL/DNSBL's you want mtarep to check your MTA public IP addresses against. The format of these must be the RBL hostnames that are queried for listings (eg: bl.spamcop.net)
 
-**provider_block_strings**
----
+**_provider_block_strings_**
+
 A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs using the other related configuration settings you specified elsewhere in the main mtarep-conf.yml configuration file.
 
-**removal_links**
----
+**_removal_links_**
+
 A YAML hash collection of external email provider names and rbl lists (the key) and a corresponding URL (the value) to that provider or rbl's listing info and/or removal form.
 
-**assistance_links** (optional)
----
+**_assistance_links_** (optional)
+
 A YAML hash collection of any custom documentation you maintain that outlines steps your organization has for resolving a specific mtarep reported issue. These links are used in the modal of a clicked issue in mtarep.
 
 Install
