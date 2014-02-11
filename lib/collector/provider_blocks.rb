@@ -36,7 +36,7 @@ module Collector
         count += 1
         retry unless count > 2
 
-        log_error('Problem encountered during ssh and remote maillog parsing')
+        log_error("Problem encountered for #{options[:mta]} during ssh and remote maillog parsing")
         log_error("Error returned: #{error}")
       end
 

@@ -101,7 +101,13 @@ Individual mtarep-conf.yml configuration settings:
 
 **mta_map**
 
-    Either a list of individual public MTA hostnames that you want mtarep to report on, or a single DNS hostname that resolves to multiple A records for multiple MTAs that you want mtarep to report on.
+    This setting can contain either a YAML array collection or a YAML hash collection.
+
+    A YAML array collection is used when you want mtarep to use the same fqdn/hostname to lookup public fqdn/hostname/ip reputation data as well as the fqdn/hostname to ssh to for mail log parsing (ESP and ISP (provider) SMTP rejection log entries). Do not use this type of map if you ssh to your MTAs using a different fqdn/hostname or host alias from it's public mail fqdn/hostname.
+
+    The YAML hash collection support for this configuration setting should be used if you ssh to your MTAs using an internal hostname or alias that is different from the host's public fqdn hostname.
+
+    Example: If you have an MTA with a public HELO hostname of mta1.mydomain.com and you also access the MTA with ssh using that same hostname, then you want to use a YAML array collection here. If you have an MTA with a public HELO hostname of mta1.mydomain.com but you ssh to the MTA using the shortname 'mta1', then you want to use a YAML hash collection here (mta1: 'mta1.mydomain.com', etc..).
 
 **graph_domains** (optional)
 
@@ -109,19 +115,19 @@ Individual mtarep-conf.yml configuration settings:
 
 **rbls**
 
-    The list of RBL/DNSBL's you want mtarep to check your MTA public IP addresses against. The format of each of these must be the RBL/DNSBL hostnames that are queried for listings (eg: bl.spamcop.net)
+    A YAML array collection of RBL/DNSBL's you want mtarep to check your MTA public IP addresses against. The format of each of these must be the RBL/DNSBL hostnames that are queried for listings (eg: bl.spamcop.net)
 
 **provider_block_strings**
 
-    A key/value list of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs using the other related configuration settings you specified elsewhere in the main mtarep-conf.yml configuration file.
+    A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs using the other related configuration settings you specified elsewhere in the main mtarep-conf.yml configuration file.
 
 **removal_links**
 
-    A key/value list of external email provider names and rbl lists (the key) and a corresponding URL (the value) to that provider or rbl's listing info and/or removal form.
+    A YAML hash collection of external email provider names and rbl lists (the key) and a corresponding URL (the value) to that provider or rbl's listing info and/or removal form.
 
 **assistance_links** (optional)
 
-    A key/value list of custom documentation that outlines any steps your organization has for resolving a reported mtarep issue. These links are used in the modal of a clicked issue in mtarep.
+    A YAML hash collection of any custom documentation you maintain that outlines steps your organization has for resolving a specific mtarep reported issue. These links are used in the modal of a clicked issue in mtarep.
 
 Install
 -------
