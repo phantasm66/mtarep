@@ -1,6 +1,10 @@
 require 'redis'
+require 'error_logger'
 
 module RedisWorker
+
+  include ErrorLogger
+
   def redis_connection(redis_host)
     count = 0
 

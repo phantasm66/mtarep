@@ -1,7 +1,7 @@
-chdir: /etc/mtarep
+chdir: /vagrant/mtarep/config
 servers: 1
 port: 80
-address: 10.20.30.40
+address: 0.0.0.0
 timeout: 30
 wait: 30
 log: /var/log/thin.log

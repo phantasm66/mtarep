@@ -1,27 +1,31 @@
 require 'net/ssh'
 require 'timeout'
+require 'error_logger'
 
 module Collector
   module ProviderBlocks
+
+    include ErrorLogger
+
     def current_blocks(options={})
       blocks_hash = {}
       loglines = ''
 
       fgrep = "export LC_ALL=C && fgrep"
       all_bounced = "#{fgrep} status=bounced #{options[:maillog]} | tail -5000"
-      comcast_error = "#{fgrep} #{options[:block_strings]['comcast']} #{options[:maillog]} | tail -10"
+      comcast_error = "#{fgrep} #{options[:provider_block_strings]['comcast']} #{options[:maillog]} | tail -10"
 
       count = 0
 
       begin
         Net::SSH.start(options[:mta], options[:ssh_user], :paranoid => false, :keys => [options[:ssh_key]]) do |ssh|
-          Timeout.timeout(120) do
+          Timeout.timeout(240) do
             ssh.exec!(all_bounced) do |channel, stream, data|
               loglines << data if stream == :stdout
             end
           end
 
-          Timeout.timeout(120) do
+          Timeout.timeout(240) do
             # because comcast is so fucking special!
             ssh.exec!(comcast_error) do |channel, stream, data|
               loglines << data if stream == :stdout
@@ -38,7 +42,7 @@ module Collector
 
       loglines = loglines.split("\n").reverse
 
-      options[:block_strings].each_pair do |provider, string|
+      options[:provider_block_strings].each_pair do |provider, string|
         options[:mta].match(/-2$/) ? pattern = '-2' : pattern = '[a-z]'
         matched = loglines.find {|x| x.match(/#{pattern}\/(smtp|error).*#{string}/)}
 

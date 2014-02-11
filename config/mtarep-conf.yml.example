@@ -1,19 +1,24 @@
-# mtarep example configuration file
+#
+# MTArep main configuration file
+#
+# A mail server reputation statistics dashboard
+#
+# Please review the README or visit - https://github.com/phantasm66/mtarep
+#
 
 error_log: /var/log/mtarep_errors.log
-redis_server: redis.example.com
-snds_key: c3499c2-729730a7-f807efb8-676a92d-cb6f8a3f8f  #this key is a non functional example!
+redis_server: localhost
+snds_key: 4ba3fdda-edb1-47c0-8ff5-16dacb3951f4
 maillog_path: /var/log/maillog
-ssh_key: /home/mtarep/.ssh/mtarep.private
+ssh_key: /root/.ssh/mtarep.private
 ssh_user: mtarep
 
 mta_map:
- - mailer1.example.com
- - mailer2.example.com
- - mailer3.example.com
- - mailer4.example.com
- - mailer5.example.com
- - mailer6.example.com
+ - mta1.mydomain.com
+ - mta2.mydomain.com
+ - mta3.mydomain.com
+ - mta4.mydomain.com
+ - mta5.mydomain.com
 
 graph_domains:
  - yahoo.com
@@ -40,7 +45,7 @@ rbls:
  - ubl.unsubscore.com
  - zen.spamhaus.org
 
-block_strings:
+provider_block_strings:
   aol: 'http://postmaster.info.aol.com/errors/5'
   att: 'For_information_see_http://att.net/blocks'
   hotmail: 'http://mail.live.com/mail/troubleshooting.aspx#errors'
@@ -64,7 +69,6 @@ removal_links:
   b.barracudacentral.org: 'http://www.barracudacentral.org/lookups'
   bl.mailspike.net: 'http://mailspike.org/anubis/lookup.html'
   bl.spamcannibal.org: 'http://www.spamcannibal.org/cannibal.cgi'
-  bl.spameatingmonkey.net: 'http://spameatingmonkey.com/lookup.html'
   block.stopspam.org: 'http://stopspam.org/rblcheck/index.php'
   cbl.abuseat.org: 'http://cbl.abuseat.org/lookup.cgi'
   dnsbl-1.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
@@ -72,8 +76,12 @@ removal_links:
   dnsbl-3.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
   multi.surbl.org: 'http://www.surbl.org/surbl-analysis'
   psbl.surriel.com: 'http://psbl.org/listing'
-  all.spamrats.com: 'http://www.spamrats.com/lookup.php?ip='
   cidr.bl.mcafee.com: 'http://www.mcafee.com/threat-intelligence/ip/default.aspx?ip='
   db.wpbl.info: 'http://www.wpbl.info/cgi-bin/detail.cgi?ip='
   ubl.unsubscore.com: 'http://ls.lashback.com/blacklist/'
+
+assistance_links:
+  hotmail: 'http://path.to.documented.steps.to/help/with.this.hotmail.form'
+  aol: 'http://path.to.documented.steps.to/help/with.this.aol.form'
+  spamhaus: 'http://path.to.documented.steps.for/how.to.deal/with.spamhaus.blocks'
 

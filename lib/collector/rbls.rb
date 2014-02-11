@@ -1,18 +1,28 @@
+require 'dns_worker'
+
 module Collector
   module Rbls
-    def rbl_listings(ip)
-      hash = {}
-      array = []
+
+    include DnsWorker
+
+    def rbl_listings(ip, rbls)
+      listings_hash = {}
+      listings = []
 
       rbls.each do |rbl_host|
         results = dns_lookup(ip, rbl_host)
-        array << results
+        listings << results unless results.empty?
       end
 
-      listings = listings.join(',')
-      hash[ip] = listings
+      if listings.empty?
+        listings = 'unlisted'
+      else
+        listings = listings.join(',')
+      end
 
-      return hash
+      listings_hash[ip] = listings
+
+      return listings_hash
     end
   end
 end

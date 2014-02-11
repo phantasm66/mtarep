@@ -1,7 +1,11 @@
 require 'resolv'
 require 'timeout'
+require 'error_logger'
 
 module DnsWorker
+
+  include ErrorLogger
+
   def dns_lookup(ip, query_host)
     reversed_ip = ip.split('.').reverse.join('.')
     count = 0
@@ -22,7 +26,7 @@ module DnsWorker
       if query_host == 'score.senderscore.com'
         return 'no score'
       else
-        return 'unlisted'
+        return []
       end
     rescue => error
       count += 1

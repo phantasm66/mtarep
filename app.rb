@@ -1,14 +1,17 @@
 #!/usr/bin/env ruby
 
-$: << 'lib' unless $:.include?('lib')
-$: << 'lib/collector' unless $:.include?('lib/collector')
+$:.unshift File.expand_path('lib')
+$:.unshift File.expand_path('lib/collector')
 
 require 'sinatra'
 require 'digest/sha1'
 require 'redis'
 require 'yaml'
 require 'redis_worker'
-require 'hosts'
+require 'collector/hosts'
+
+include RedisWorker
+include Collector::Hosts
 
 configure do
   set :public_folder, Proc.new { File.join(root, 'vendor') }
@@ -30,12 +33,11 @@ end
 
 before do
   @mta_keys = []
-  config = YAML.load_file('config/mtarep-conf.yml')
-  @redis = redis_connection(config['redis_host'])
-  mta_map(config['mta_map']).each_pair {|ip, mta| @mta_keys << ip}
+  @config = YAML.load_file('config/mtarep-conf.yml')
+  @redis = redis_connection(@config['redis_host'])
 
-  graph_domains = config['graph_domains']
-
+  mta_map(@config['mta_map']).each_pair {|ip, mta| @mta_keys << ip}
+  graph_domains = @config['graph_domains']
   date = Time.now.to_s.split[0].gsub('-', '')
 
   fbl = []
@@ -100,14 +102,16 @@ end
 get '/' do
   count = 0
   begin
-    @hash = Hash.new
+    @assistance_links = @config['assistance_links']
+    @provider_block_strings = @config['provider_block_strings']
+    @mta_redis_data_hash = {}
 
     @mta_keys.each do |ip|
-      @hash[ip] = @redis.lrange(ip, 0, -1)
-      new_hash = @hash.clone
+      @mta_redis_data_hash[ip] = @redis.lrange(ip, 0, -1)
+      new_hash = @mta_redis_data_hash.clone
 
-      @hash.each_pair {|ip ,data| new_hash[ip] = Hash[*data.flatten]}
-      @hash = new_hash
+      @mta_redis_data_hash.each_pair {|ip ,data| new_hash[ip] = Hash[*data.flatten]}
+      @mta_redis_data_hash = new_hash
     end
   rescue
     count += 1

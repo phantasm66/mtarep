@@ -1,8 +1,12 @@
 require 'net/http'
 require 'timeout'
+require 'error_logger'
 
 module Collector
   module Snds
+
+    include ErrorLogger
+
     def snds_data(snds_key)
       response = ''
       snds_hash = {}

@@ -1,7 +1,11 @@
 require 'resolv'
+require 'error_logger'
 
 module Collector
   module Hosts
+
+    include ErrorLogger
+
     def mta_map(hostnames)
       mta_hash = {}
       ips = []

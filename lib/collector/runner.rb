@@ -1,18 +1,23 @@
-$: << '..' unless $:.include?('..')
-
-require 'loader'
+require 'hosts'
+require 'rbls'
+require 'snds'
+require 'dns_worker'
 require 'securerandom'
-
-include DnsWorker
-include ErrorLogger
-include RedisWorker
-include Collector::Hosts
-include Collector::ProviderBlocks
-include Collector::Rbls
-include Collector::Snds
+require 'error_logger'
+require 'redis_worker'
+require 'provider_blocks'
 
 module Collector
   module Runner
+
+    include DnsWorker
+    include ErrorLogger
+    include RedisWorker
+    include Collector::Hosts
+    include Collector::ProviderBlocks
+    include Collector::Rbls
+    include Collector::Snds
+
     def pid_cleanup(active_pid, command)
       pid = nil
 
@@ -55,27 +60,27 @@ module Collector
 
         snds.empty? ? snds = ['no data', 'no data'] : snds
 
-        blocks = current_blocks(:mta => mta,
-                                options[:block_strings],
-                                options[:ssh_user],
-                                options[:ssh_key],
-                                options[:maillog])
+        blocks = current_blocks({ :mta => mta,
+                                  :provider_block_strings => options[:provider_block_strings],
+                                  :ssh_user => options[:ssh_user],
+                                  :ssh_key => options[:ssh_key],
+                                  :maillog => options[:maillog] })
 
         if blocks.empty?
           blocks = 'no blocks'
         elsif blocks.key?('error')
-          blocks = blocks.values_at('error')
+          blocks = blocks['error']
         else
-          array = []
+          blocks_array = []
 
           blocks.each_pair do |provider, log|
             id = SecureRandom.hex(13)
             redis.hmset(id, mta_shortname, log)
 
-            array << "#{provider}:#{id}"
+            blocks_array << "#{provider}:#{id}"
           end
 
-          blocks = array.join(',')
+          blocks = blocks_array.join(',')
         end
 
         fields = {
@@ -90,8 +95,8 @@ module Collector
         begin
           redis.del(ip)
 
-          array = fields.to_a.flatten
-          array.each{|x| redis.rpush(ip, x)}
+          new_redis_data = fields.to_a.flatten
+          new_redis_data.each {|data| redis.rpush(ip, data)}
 
           redis_clean_acks(options[:redis_host], fields, ip)
         rescue => error
@@ -100,7 +105,7 @@ module Collector
         end
       end
 
-      # now we update the rbl list and removal link lists in redis
+      # now update rbl & removal link lists in redis!
 
       begin
         redis.del('rbls')

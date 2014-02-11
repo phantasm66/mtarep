@@ -1,13 +1,14 @@
 #!/usr/bin/env ruby
 
-$: << 'lib' unless $:.include?('lib')
-$: << 'lib/collector' unless $:.include?('lib/collector')
+$:.unshift File.expand_path('lib')
+$:.unshift File.expand_path('lib/collector')
 
 require 'runner'
 require 'yaml'
 
-config = YAML.load_file('config/mtarep-conf.yml')
+include Collector::Runner
 
+config = YAML.load_file('config/mtarep-conf.yml')
 ENV['ERROR_LOG'] = config['error_log']
 
 run_collector({ :active_pid => Process.pid,
@@ -15,7 +16,7 @@ run_collector({ :active_pid => Process.pid,
                 :rbls => config['rbls'],
                 :mta_map => config['mta_map'],
                 :snds_key => config['snds_key'],
-                :block_strings => config['block_strings'],
+                :provider_block_strings => config['provider_block_strings'],
                 :ssh_user => config['ssh_user'],
                 :ssh_key => config['ssh_key'],
                 :maillog => config['maillog_path'],

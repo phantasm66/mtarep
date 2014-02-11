@@ -8,8 +8,10 @@ Requirements:
     Redis
     Thin
 
-Reporting:
-----------
+Overview:
+---------
+The following data is displayed for each MTA you report on using mtarep:
+
     ReturnPath's Sender Score
     Microsoft's SNDS (Smart Network Data Services)
     Major ESP SMTP rejection blocks
@@ -47,25 +49,52 @@ In a single 24 hour period (midnight to 11:59pm), you will need to be shipping a
 Configuration:
 --------------
 Please adjust and remove the '.example' appendage from the included example configs to config.ru, mtarep-thin.yml and mtarep-conf.yml accordingly.
+All configuration of mtarep is managed from the app's main YAML configuration file (mtarep-conf.yml).
 
-NOTE: The mta_map array config line in mtarep-conf.yml can take a single fqdn that resolves to multiple A records (ie: a group of MTA IP addresses) or you can just list out your MTA public fqdns in the mta_map YAML list array.
+Individual mtarep-conf.yml configuration settings:
 
-Default RBL Sources:
---------------------
-    b.barracudacentral.org
-    bl.mailspike.net
-    bl.score.senderscore.com
-    bl.spamcannibal.org
-    bl.spamcop.net
-    block.stopspam.org
-    cbl.abuseat.org
-    cidr.bl.mcafee.com
-    db.wpbl.info
-    dnsbl-1.uceprotect.net
-    dnsbl-2.uceprotect.net
-    dnsbl-3.uceprotect.net
-    multi.surbl.org
-    psbl.surriel.com
-    ubl.unsubscore.com
-    zen.spamhaus.org
+    **error_log**
+        The file path to the main mtarep error log file. All directories in the path must already exist.
 
+    **redis_server**
+        The DNS resolvable hostname of your redis server. Your redis server will be accessed over the default port of 6379 and the primary 'db0' database. Currently non standard ports and redis databases are not supported.
+
+    **snds_key**
+        Your organization's microsoft 'smart network data services' (SNDS) data access key. If you do not use microsoft's SNDS, you should signup here: https://postmaster.live.com/snds/
+
+    **maillog_path**
+        The remote file path to your current postfix mail log file on each MTA that you are using mtarep to report major provider rejections/blocks for. Currently only postfix log formats are supported.
+
+    **ssh_key**
+        The file path to the ssh key you want to access your remote MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
+
+    **ssh_user**
+        The ssh username associated with the 'ssh_key' you specified above.
+
+    **mta_map**
+        Either a list of individual public MTA hostnames that you want mtarep to report on, or a single DNS hostname that resolves to multiple A records for multiple MTAs that you want mtarep to report on.
+
+    **graph_domains** (optional)
+        The domains that you want mtarep to render sent, bounced, feedback-loop and expired message counts for.
+
+    **rbls**
+        The list of RBL/DNSBL's you want mtarep to check your MTA IP addresses against. The format of each of these must be the RBL/DNSBL hostnames that are queried for listings (eg: bl.spamcop.net)
+
+    **provider_block_strings**
+        A key/value list of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs using the other related configuration settings you specified elsewhere in the main mtarep-conf.yml configuration file.
+
+    **removal_links**
+        A key/value list of external email provider names and rbl lists (the key) and a corresponding URL (the value) to that provider or rbl's listing info and/or removal form.
+
+    **assistance_links** (optional)
+        A key/value list of custom documentation that outlines any steps your organization has for resolving a reported mtarep issue. These links are used in the modal of a clicked issue in mtarep.
+
+Install:
+--------
+- Clone this repo
+- Customize the 3 included configs for rackup (config.ru), thin (mtarep-thin.yml) and mtarep (mtarep-conf.yml)
+- Start your 'thin' web server with the customized mtarep-thin.yml file
+- Schedule the mtarep/collector.rb to run every 15 minutes via cron or other scheduling process
+- Browse to a http://hostname:port combination that resolves to what you specified in the mtarep-thin.yml configuration file
+
+You should adjust the scheduling interval for mtarep/collector.rb according to the size of your data, number of MTAs, size of maillogs, etc. Just keep in mind the time it will take each collector run to complete. Mtarep will safely terminate any currently running collector process it detects before it's run begins so there's no overlap in jobs.
