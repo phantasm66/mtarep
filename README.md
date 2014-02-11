@@ -9,7 +9,7 @@ Requirements
     Redis Server
     Redis RubyGem
     Net/SSH RubyGem
-    Postfix MTAs
+    Postfix MTA
 
 Overview
 --------
@@ -22,13 +22,15 @@ The following data is collected and displayed for each postfix MTA you report on
 
 All the data is collected and inserted into a redis data store whenever the collector completes a run. The collector (collector.rb) can be scheduled via cron. The sinatra webapp (app.rb) handles generating the HTML and retrieving the data from redis.
 
-Web UI
-------
+Web Interface
+-------------
 ![Alt text](screenshots/mtarep-webui-example.png?raw=true)
 
 When a provider block or rbl cell contains a listing, it becomes clickable. For provider blocks, when you click a block link a modal appears containing the most recent smtp rejection message from your server's maillog (location and access are configurable in the mtarep-conf.yml file), as well details about the listing and a direct link to that provider's block removal form or instructions. The same scenario occurs for rbl listings as well minus the maillog info, because mtarep queries rbl lists directly over dns (you can customize the list of rbls queried in the mtarep-conf.yml file as well).
 
-Each column header in the WebUI allows for sorting (eg: sort by rbl listings, microsoft SNDS filtering or trap hits, hostname, etc..)
+Each issue's modal contains an acknowledgement button that can be clicked once you begin working an mtarep reported issue. When the acknowledgement button is clicked, a unique key is inserted back into redis that holds all the details about the listing, the date and time it was acknowledged, and by which http authenticated username. Once acknowledged, the modal no longer displays an acknowledgement button, but instead displays the date, time and username that acknowledged the issue. This prevents multiple users working the same issue unknowingly.
+
+Each column header in the web interface allows for rows sorting (eg: sort by rbl listings, microsoft SNDS filtering or trap hits, hostname, etc..)
 
 Graphing
 --------
@@ -38,7 +40,7 @@ The included graphing will require you to configure a few things outside the sco
 
 Sent, bounced, expired and feedback loop count graphs can be easily configured for the domains of your choosing via the 'graph_domains' list array section in the included mtarep-conf.yml configuration file. The graphing is provided by the [HighCharts JS API](http://www.highcharts.com/products/highcharts). The individual bar graphs can be removed from view to allow more granular detail on the remaining bar graphs. This is particularly helpful if your sent total bar graph obfuscates the shit out of the bounce, fbl or expired graphs (deliverability hint: you want this to happen!).
 
-The graph data is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, it will be calculated and rendered if the appropriate data exists in the same redis db used by mtarep. The web ui will automatically calculate any HINCRBY (key field increment) keys in your redis backend in the format of:
+The graph data is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, it will be calculated and rendered if the appropriate data exists in the same redis db used by mtarep. The mtarep graphing web interface will automatically calculate any HINCRBY (key field increment) keys in your redis backend in the format of:
 
     20140208:expired
     20140208:fbl
@@ -58,7 +60,7 @@ Individual mtarep-conf.yml configuration settings:
 
 **error_log**
 
-    The file path to the main mtarep error log file. All directories in the path must already exist.
+    The absolute path to your main mtarep error log file. All directories in the path must already exist. If the error log file does not exist, it will be created.
 
 **redis_server**
 
@@ -66,19 +68,23 @@ Individual mtarep-conf.yml configuration settings:
 
 **snds_key**
 
-    Your organization's microsoft 'smart network data services' (SNDS) data access key. If you do not use microsoft's SNDS, you should signup here: https://postmaster.live.com/snds/
+    Your organization's microsoft 'smart network data services' (SNDS) data access key. If you do not use microsoft's SNDS, you should signup here: https://postmaster.live.com/snds/.
 
 **maillog_path**
 
-    The remote file path to your current postfix mail log file on each postfix MTA that you are using mtarep to report major provider rejections/blocks for. Currently only postfix log formats are supported.
+    The absolute path to your current postfix mail log file on each postfix MTA that you are using mtarep to report major provider rejections/blocks for. Currently only postfix log formats are supported.
 
 **ssh_key**
 
-    The file path to the ssh key you want to access your remote postfix MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
+    The absolute path to the ssh key file you want to access your remote postfix MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
 
 **ssh_user**
 
     The ssh username associated with the 'ssh_key' you specified above.
+
+**http_auth_file**
+
+    The absolute path to your mtarep app's http authentication file. This is used for authentcating login access credentials (username/password) to the mtarep web interface. The format of this file must be 'username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM='. Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
 
 **mta_map**
 

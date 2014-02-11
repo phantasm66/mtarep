@@ -13,13 +13,15 @@ require 'collector/hosts'
 include RedisWorker
 include Collector::Hosts
 
+@config = YAML.load_file('config/mtarep-conf.yml')
+
 configure do
   set :public_folder, Proc.new { File.join(root, 'vendor') }
   set :environment, :production
   set :show_exceptions, true
   enable :sessions, :logging
 
-  authfile = '/home/httpd/local/htpasswd'
+  authfile = @config['http_auth_file']
   authlist = IO.read(authfile).split("\n")
 
   use Rack::Auth::Basic, 'Protected Area' do |user, pass|
@@ -33,7 +35,6 @@ end
 
 before do
   @mta_keys = []
-  @config = YAML.load_file('config/mtarep-conf.yml')
   @redis = redis_connection(@config['redis_host'])
 
   mta_map(@config['mta_map']).each_pair {|ip, mta| @mta_keys << ip}

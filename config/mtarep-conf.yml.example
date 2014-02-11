@@ -8,10 +8,11 @@
 
 error_log: /var/log/mtarep_errors.log
 redis_server: localhost
-snds_key: 4ba3fdda-edb1-47c0-8ff5-16dacb3951f4
+snds_key: 4ba3fdda-edb1-47c0-8ff5-16dacb3951f4 (this is a non working example key)
 maillog_path: /var/log/maillog
 ssh_key: /root/.ssh/mtarep.private
 ssh_user: mtarep
+http_auth_file: /etc/mtarep/htpasswd
 
 mta_map:
  - mta1.mydomain.com
