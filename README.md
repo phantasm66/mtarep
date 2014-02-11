@@ -53,40 +53,52 @@ All configuration of mtarep is managed from the app's main YAML configuration fi
 
 Individual mtarep-conf.yml configuration settings:
 
-* error_log
+**error_log**
+
     The file path to the main mtarep error log file. All directories in the path must already exist.
 
-* redis_server
+**redis_server**
+
     The DNS resolvable hostname of your redis server. Your redis server will be accessed over the default port of 6379 and the primary 'db0' database. Currently non standard ports and redis databases are not supported.
 
-* snds_key
+**snds_key**
+
     Your organization's microsoft 'smart network data services' (SNDS) data access key. If you do not use microsoft's SNDS, you should signup here: https://postmaster.live.com/snds/
 
-* maillog_path
+**maillog_path**
+
     The remote file path to your current postfix mail log file on each MTA that you are using mtarep to report major provider rejections/blocks for. Currently only postfix log formats are supported.
 
-* ssh_key
+**ssh_key**
+
     The file path to the ssh key you want to access your remote MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
 
-* ssh_user
+**ssh_user**
+
     The ssh username associated with the 'ssh_key' you specified above.
 
-* mta_map
+**mta_map**
+
     Either a list of individual public MTA hostnames that you want mtarep to report on, or a single DNS hostname that resolves to multiple A records for multiple MTAs that you want mtarep to report on.
 
-* graph_domains (optional)
+**graph_domains** (optional)
+
     The domains that you want mtarep to render sent, bounced, feedback-loop and expired message counts for.
 
-* rbls
+**rbls**
+
     The list of RBL/DNSBL's you want mtarep to check your MTA IP addresses against. The format of each of these must be the RBL/DNSBL hostnames that are queried for listings (eg: bl.spamcop.net)
 
-* provider_block_strings
+**provider_block_strings**
+
     A key/value list of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs using the other related configuration settings you specified elsewhere in the main mtarep-conf.yml configuration file.
 
-* removal_links
+**removal_links**
+
     A key/value list of external email provider names and rbl lists (the key) and a corresponding URL (the value) to that provider or rbl's listing info and/or removal form.
 
-* assistance_links (optional)
+**assistance_links** (optional)
+
     A key/value list of custom documentation that outlines any steps your organization has for resolving a reported mtarep issue. These links are used in the modal of a clicked issue in mtarep.
 
 Install:
