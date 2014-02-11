@@ -62,9 +62,7 @@ key << 'bounced'
 @redis.hincrby(key.join(':'), 'gmail.com', 1)
 ```
 
-This would update the increment counter on the 'gmail.com' field for redis key '20140208:bounced' by 1 for each bounced 'gmail.com' message that is processed by this code.
-
-This could be easily be inserted into redis using the HINCRBY operation and using a custom redis output plugin with [Logstash](https://github.com/logstash/logstash).
+This would update the increment counter on the 'gmail.com' field for redis key '20140208:bounced' by 1 for each bounced 'gmail.com' message that is processed by this code. This could be easily accomplished by creating a custom redis output plugin with [Logstash](https://github.com/logstash/logstash) to filter and ship this data directly from your postfix mail logs.
 
 Configuration
 -------------
