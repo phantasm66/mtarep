@@ -4,18 +4,21 @@ Collect and report on your mail servers' reputation, deliverability and rbl stat
 
 Requirements
 ------------
-    Sinatra
-    Redis
     Thin
+    Sinatra
+    Redis Server
+    Redis RubyGem
+    Net/SSH RubyGem
+    Postfix MTAs
 
 Overview
 --------
-The following data is displayed for each MTA you report on using mtarep:
+The following data is collected and displayed for each MTA you report on using mtarep:
 
     ReturnPath's Sender Score
     Microsoft's SNDS (Smart Network Data Services)
-    Major ESP SMTP rejection blocks
-    Several widely used RBL's
+    Postfix Maillog SMTP Rejection Blocks
+    RBL/DNSBL Listings
 
 All the data is collected and inserted into a redis data store whenever the collector completes a run. The collector (collector.rb) can be scheduled via cron. The sinatra webapp (app.rb) handles generating the HTML and retrieving the data from redis.
 
