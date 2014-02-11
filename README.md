@@ -13,7 +13,7 @@ Requirements
 
 Overview
 --------
-The following data is collected and displayed for each MTA you report on using mtarep:
+The following data is collected and displayed for each postfix MTA you report on using mtarep:
 
     ReturnPath's Sender Score
     Microsoft's SNDS (Smart Network Data Services)
@@ -70,11 +70,11 @@ Individual mtarep-conf.yml configuration settings:
 
 **maillog_path**
 
-    The remote file path to your current postfix mail log file on each MTA that you are using mtarep to report major provider rejections/blocks for. Currently only postfix log formats are supported.
+    The remote file path to your current postfix mail log file on each postfix MTA that you are using mtarep to report major provider rejections/blocks for. Currently only postfix log formats are supported.
 
 **ssh_key**
 
-    The file path to the ssh key you want to access your remote MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
+    The file path to the ssh key you want to access your remote postfix MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
 
 **ssh_user**
 
@@ -90,7 +90,7 @@ Individual mtarep-conf.yml configuration settings:
 
 **rbls**
 
-    The list of RBL/DNSBL's you want mtarep to check your MTA IP addresses against. The format of each of these must be the RBL/DNSBL hostnames that are queried for listings (eg: bl.spamcop.net)
+    The list of RBL/DNSBL's you want mtarep to check your MTA public IP addresses against. The format of each of these must be the RBL/DNSBL hostnames that are queried for listings (eg: bl.spamcop.net)
 
 **provider_block_strings**
 
