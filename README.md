@@ -42,18 +42,29 @@ Sent, bounced, expired and feedback loop count graphs can be easily configured f
 
 The graph data is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, bar graphs will be calculated and rendered by mtarep if the appropriate data exists in the same redis db used by mtarep.
 
-The mtarep graphing web interface will search redis for HINCRBY keys in the format of:
+The mtarep graphing web interface will search redis for keys in the format of:
 
     20140208:expired
     20140208:fbl
     20140208:bounced
     20140208:sent
 
-Where 20140208 is the current date.
+*Where 20140208 is the current date*
 
-These keys contain incrementing totals of each unique domain that has been sent a message by your mail servers. The exact redis operation is HINCRBY (http://redis.io/commands/hincrby). 
+These keys contain an incrementing total for each unique domain that has been sent, bounced, expired or feedback-loop received.
 
-In a single 24 hour period (midnight to 11:59pm), you will need to be shipping and storing increments of unique domain totals for sent, expired, fbl and bounced messages. Unique domain single increments can easily be inserted into redis using the HINCRBY operation and using a log shipping tool like [Logstash](https://github.com/logstash/logstash), which comes stock with a fantastic set of output formats (like redis).
+The exact redis operation is HINCRBY (http://redis.io/commands/hincrby).
+
+Using the redis rubygem, you could do something like this to increment a counter for each bounced email to gmail.com:
+```ruby
+key = [Time.now.strftime("%Y%m%d")]
+key << 'bounced'
+@redis.hincrby(key.join(':'), 'gmail.com', 1)
+```
+
+This would update the increment counter on the 'gmail.com' field for redis key '20140208:bounced' by 1 for each bounced 'gmail.com' message that is processed by this code.
+
+This could be easily be inserted into redis using the HINCRBY operation and using a custom redis output plugin with [Logstash](https://github.com/logstash/logstash).
 
 Configuration
 -------------
