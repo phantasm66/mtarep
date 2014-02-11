@@ -104,9 +104,9 @@ Individual mtarep-conf.yml configuration settings:
 Install:
 --------
 - Clone this repo
-- Customize the 3 included configs for rackup (config.ru), thin (mtarep-thin.yml) and mtarep (mtarep-conf.yml)
-- Start your 'thin' web server with the customized mtarep-thin.yml file
-- Schedule the mtarep/collector.rb to run every 15 minutes via cron or other scheduling process
+- Create & customize the rackup (config.ru), thin (mtarep-thin.yml) and mtarep (mtarep-conf.yml) files using the included example files
+- Start your 'thin' web server with your newly customized mtarep-thin.yml file
+- Schedule the mtarep/collector.rb to run every 15 minutes via cron or other scheduling process (see below for details)
 - Browse to a http://hostname:port combination that resolves to what you specified in the mtarep-thin.yml configuration file
 
 You should adjust the scheduling interval for mtarep/collector.rb according to the size of your data, number of MTAs, size of maillogs, etc. Just keep in mind the time it will take each collector run to complete. Mtarep will safely terminate any currently running collector process it detects before it's run begins so there's no overlap in jobs.
