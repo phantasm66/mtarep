@@ -10,7 +10,7 @@ module DnsWorker
     counter = 0
 
     begin
-      Timeout.timeout(3) do
+      Timeout.timeout(5) do
         results = Resolv.new.getaddress(name)
         return results
       end
@@ -21,8 +21,10 @@ module DnsWorker
       sleep 1
       retry if counter < 3
 
-      log_error('Problem encountered during a dns lookup operation')
+      log_error("Problem encountered during a dns lookup for #{name}")
       log_error("DNS lookup returned: #{error}")
+
+      return []
     end
   end
 

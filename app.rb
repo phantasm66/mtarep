@@ -13,15 +13,16 @@ require 'collector/hosts'
 include RedisWorker
 include Collector::Hosts
 
-@config = YAML.load_file('config/mtarep-conf.yml')
-
 configure do
+  hashed_config_file = YAML.load_file('config/mtarep-conf.yml')
+  set :config_options, hashed_config_file
+
   set :public_folder, Proc.new { File.join(root, 'vendor') }
   set :environment, :production
   set :show_exceptions, true
   enable :sessions, :logging
 
-  authfile = @config['http_auth_file']
+  authfile = settings.config_options['http_auth_file']
   authlist = IO.read(authfile).split("\n")
 
   use Rack::Auth::Basic, 'Protected Area' do |user, pass|
@@ -35,10 +36,10 @@ end
 
 before do
   @mta_keys = []
-  @redis = redis_connection(@config['redis_host'])
+  @redis = redis_connection(settings.config_options['redis_host'])
 
-  mta_map(@config['mta_map']).each {|hash| @mta_keys << hash[:ip]}
-  graph_domains = @config['graph_domains']
+  mta_map(settings.config_options['mta_map']).each {|hash| @mta_keys << hash[:ip]}
+  graph_domains = settings.config_options['graph_domains']
   date = Time.now.to_s.split[0].gsub('-', '')
 
   fbl = []
@@ -103,8 +104,8 @@ end
 get '/' do
   count = 0
   begin
-    @assistance_links = @config['assistance_links']
-    @provider_block_strings = @config['provider_block_strings']
+    @assistance_links = settings.config_options['assistance_links']
+    @provider_block_strings = settings.config_options['provider_block_strings']
     @mta_redis_data_hash = {}
 
     @mta_keys.each do |ip|

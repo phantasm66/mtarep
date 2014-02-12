@@ -88,7 +88,7 @@ module Collector
           :sndscolor => snds[0],
           :sndstraps => snds[1],
           :provblocks => blocks,
-          :listings => rbls[ip]
+          :listings => rbls[mta_data[:ip]]
         }
 
         begin
