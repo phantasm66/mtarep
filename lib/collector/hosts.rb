@@ -1,39 +1,26 @@
-require 'resolv'
-require 'error_logger'
+require 'dns_worker'
 
 module Collector
   module Hosts
 
-    include ErrorLogger
+    include DnsWorker
 
-    def mta_map(hostnames)
-      mta_hash = {}
-      ips = []
+    def mta_map(hostname_map)
+      mta_data = []
 
-      hostnames.each do |hostname|
-        # dig.. in case results are huge!
-        results = %x{dig #{hostname} +short +tcp}
-        ips << results.split("\n")
-      end
-
-      ips.flatten!
-
-      count = 0
-      ips.each do |ip|
-        begin
-          mta = Resolv.new.getname(ip)
-        rescue
-          count += 1
-          retry unless count > 5
-
-          log_error("Unable to resolve rDNS for #{ip}... skipping")
-          next
+      if hostname_map.class == Hash
+        hostname_map.each_pair do |alias_name, fqdn|
+          results = resolver(fqdn)
+          mta_data << {:alias => alias_name, :ip => results, :fqdn => fqdn}
         end
-
-        mta_hash[ip] = mta
+      elsif hostname_map.class == Array
+        hostname_map.each do |fqdn|
+          results = resolver({:string => fqdn, :type => 'forward'})
+          mta_data << {:alias => fqdn, :ip => results, :fqdn => fqdn}
+        end
       end
 
-      return mta_hash
+      return mta_data
     end
   end
 end

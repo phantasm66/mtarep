@@ -14,13 +14,6 @@ ssh_key: /root/.ssh/mtarep.private
 ssh_user: mtarep
 http_auth_file: /etc/mtarep/htpasswd
 
-mta_map:
- - mta1.mydomain.com
- - mta2.mydomain.com
- - mta3.mydomain.com
- - mta4.mydomain.com
- - mta5.mydomain.com
-
 graph_domains:
  - yahoo.com
  - hotmail.com
@@ -45,6 +38,13 @@ rbls:
  - psbl.surriel.com
  - ubl.unsubscore.com
  - zen.spamhaus.org
+
+mta_map:
+  mta1-internal: 'mta1.mydomain.com'
+  mta2-internal: 'mta2.mydomain.com'
+  mta3-internal: 'mta3.mydomain.com'
+  mta4-internal: 'mta4.mydomain.com'
+  mta5-internal: 'mta5.mydomain.com'
 
 provider_block_strings:
   aol: 'http://postmaster.info.aol.com/errors/5'

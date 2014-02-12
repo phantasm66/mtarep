@@ -9,8 +9,8 @@ module Collector
       listings_hash = {}
       listings = []
 
-      rbls.each do |rbl_host|
-        results = dns_lookup(ip, rbl_host)
+      rbls.each do |query_host|
+        results = rbl_lookup(ip, query_host)
         listings << results unless results.empty?
       end
 

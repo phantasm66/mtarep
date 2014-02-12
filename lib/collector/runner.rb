@@ -45,22 +45,21 @@ module Collector
       snds_data = snds_data(options[:snds_key])
       redis = redis_connection(options[:redis_host])
 
-      mta_map(options[:mta_map]).each_pair do |ip, mta|
+      mta_map(options[:mta_map]).each do |mta_data|
         snds = []
 
-        score = dns_lookup(ip, 'score.senderscore.com')
-        rbls = rbl_listings(ip, options[:rbls])
-        mta_shortname = mta.split('.')[0]
+        score = score_lookup(mta_data[:ip])
+        rbls = rbl_listings(mta_data[:ip], options[:rbls])
 
         snds_data.each_pair do |ip_address, data|
-          next unless ip_address == ip
+          next unless ip_address == mta_data[:ip]
           snds = data
           break
         end
 
         snds.empty? ? snds = ['no data', 'no data'] : snds
 
-        blocks = current_blocks({ :mta => mta,
+        blocks = current_blocks({ :mta => mta_data[:alias],
                                   :provider_block_strings => options[:provider_block_strings],
                                   :ssh_user => options[:ssh_user],
                                   :ssh_key => options[:ssh_key],
@@ -75,7 +74,7 @@ module Collector
 
           blocks.each_pair do |provider, log|
             id = SecureRandom.hex(13)
-            redis.hmset(id, mta_shortname, log)
+            redis.hmset(id, mta_data[:alias], log)
 
             blocks_array << "#{provider}:#{id}"
           end
@@ -84,7 +83,7 @@ module Collector
         end
 
         fields = {
-          :hostname => mta,
+          :hostname => mta_data[:fqdn],
           :senderscore => score,
           :sndscolor => snds[0],
           :sndstraps => snds[1],
@@ -93,12 +92,12 @@ module Collector
         }
 
         begin
-          redis.del(ip)
+          redis.del(mta_data[:ip])
 
           new_redis_data = fields.to_a.flatten
-          new_redis_data.each {|data| redis.rpush(ip, data)}
+          new_redis_data.each {|data| redis.rpush(mta_data[:ip], data)}
 
-          redis_clean_acks(options[:redis_host], fields, ip)
+          redis_clean_acks(options[:redis_host], fields, mta_data[:ip])
         rescue => error
           log_error('Problem encountered during a redis operation')
           log_error("Redis server returned: #{error}")
