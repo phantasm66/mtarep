@@ -1,24 +1,24 @@
 MTAREP
 ================================
-Collect and report on your mail servers' reputation, deliverability and rbl statistics.
+Collect and report on your mail server reputations, deliverability and rbl statistics.
 
 Requirements
 ------------
-    [Thin](https://github.com/macournoyer/thin/)
-    [Sinatra](https://github.com/sinatra/sinatra/)
-    [Redis Server](http://redis.io/)
-    [Redis Ruby Client](https://github.com/redis/redis-rb)
-    [Net/SSH](https://github.com/net-ssh/net-ssh)
-    [Fully Functional Postfix Mail Servers](http://www.postfix.org/)
+* [Thin](https://github.com/macournoyer/thin/)
+* [Sinatra](https://github.com/sinatra/sinatra/)
+* [Redis Server](http://redis.io/)
+* [Redis Ruby Client](https://github.com/redis/redis-rb)
+* [Net/SSH](https://github.com/net-ssh/net-ssh)
+* [Fully Functional Postfix Mail Servers](http://www.postfix.org/)
 
 Overview
 --------
 The following data is collected and displayed for each postfix MTA you report on using mtarep:
 
-    [Return Path Sender Score](https://www.senderscore.org/)
-    [Microsoft SNDS (Smart Network Data Services)](https://postmaster.live.com/snds/)
-    Postfix Maillog SMTP Rejection Blocks
-    RBL/DNSBL Listings
+* [Return Path Sender Score](https://www.senderscore.org/)
+* [Microsoft SNDS (Smart Network Data Services)](https://postmaster.live.com/snds/)
+* Postfix Maillog SMTP Rejection Blocks
+* RBL/DNSBL Listings
 
 All the data is collected and inserted into a redis data store whenever the collector completes a run. The collector (collector.rb) can be scheduled via cron. The sinatra webapp (app.rb) handles generating the HTML and retrieving the data from redis.
 
@@ -77,7 +77,7 @@ Individual mtarep-conf.yml configuration settings:
 
 ***snds_key:***
 
-   Your organization's microsoft 'smart network data services' (SNDS) data access key. If you do not use microsoft's SNDS, you should signup here: https://postmaster.live.com/snds/.
+   Your organization's microsoft [Smart Network Data Services](https://postmaster.live.com/snds/) data access key. If you do not use microsoft SNDS, you should signup immediately. There is a wealth of info regarding your inbox placement.
 
 ***maillog_path:***
 
@@ -85,7 +85,7 @@ Individual mtarep-conf.yml configuration settings:
 
 ***ssh_key:***
 
-   The absolute path to the ssh key file you want to access your remote postfix MTAs with. The ssh key you provide here must have permissions to the remote 'maillog_path' you specified above, and for the 'ssh_user' you specify below.
+   The absolute path to the ssh key file (on the server running mtarep) you want to use to access your remote postfix MTA mail logs with. The ssh key you provide here must have permissions to the remote 'maillog_path' specified above, and for the 'ssh_user' you specify below.
 
 ***ssh_user:***
 
