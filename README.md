@@ -8,7 +8,7 @@ Requirements
 * [Sinatra](https://github.com/sinatra/sinatra/)
 * [Redis Server](http://redis.io/)
 * [Redis Ruby Client](https://github.com/redis/redis-rb)
-* [Net/SSH](https://github.com/net-ssh/net-ssh)
+* [Ruby Net/SSH](https://github.com/net-ssh/net-ssh)
 * [Fully Functional Postfix Mail Servers](http://www.postfix.org/)
 
 Overview
