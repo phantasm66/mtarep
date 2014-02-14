@@ -4,19 +4,19 @@ Collect and report on your mail servers' reputation, deliverability and rbl stat
 
 Requirements
 ------------
-    Thin
-    Sinatra
-    Redis Server
-    Redis RubyGem
-    Net/SSH RubyGem
-    Postfix MTA
+    [Thin](https://github.com/macournoyer/thin/)
+    [Sinatra](https://github.com/sinatra/sinatra/)
+    [Redis Server](http://redis.io/)
+    [Redis Ruby Client](https://github.com/redis/redis-rb)
+    [Net/SSH](https://github.com/net-ssh/net-ssh)
+    [Fully Functional Postfix Mail Servers](http://www.postfix.org/)
 
 Overview
 --------
 The following data is collected and displayed for each postfix MTA you report on using mtarep:
 
-    ReturnPath's Sender Score
-    Microsoft's SNDS (Smart Network Data Services)
+    [Return Path Sender Score](https://www.senderscore.org/)
+    [Microsoft SNDS (Smart Network Data Services)](https://postmaster.live.com/snds/)
     Postfix Maillog SMTP Rejection Blocks
     RBL/DNSBL Listings
 
@@ -26,9 +26,9 @@ Web Interface
 -------------
 ![Alt text](screenshots/mtarep-webui-example.png?raw=true)
 
-When a provider block or rbl cell contains a listing, it becomes clickable. For provider blocks, when you click a block link a modal appears containing the most recent smtp rejection message from your server's maillog (location and access are configurable in the mtarep-conf.yml file), as well details about the listing and a direct link to that provider's block removal form or instructions. The same scenario occurs for rbl listings as well minus the maillog info, because mtarep queries rbl lists directly over dns (you can customize the list of rbls queried in the mtarep-conf.yml file as well).
+When a provider block or rbl cell contains a listing, it becomes clickable. For provider blocks, when you click a block link a modal appears containing the most recent smtp rejection message from your server's maillog (location and access are configurable in the mtarep-conf.yml file), as well details about the listing and a direct link to that provider's block removal form or instructions. The same scenario occurs for rbl listings but without the maillog info, as mtarep queries rbls directly via a dns lookup.
 
-Each issue's modal contains an acknowledgement button that can be clicked once you begin working an mtarep reported issue. When the acknowledgement button is clicked, a unique key is inserted back into redis that holds all the details about the listing, the date and time it was acknowledged, and by which http authenticated username. Once acknowledged, the modal no longer displays an acknowledgement button, but instead displays the date, time and username that acknowledged the issue. This prevents multiple users working the same issue unknowingly.
+Each issue modal contains an acknowledgement button that can be clicked once you begin working an mtarep reported issue. When the acknowledgement button is clicked, a unique key is inserted back into redis that holds basic details about the issue, including a timestamp and the mtarep authenticated http username. Once acknowledged, the acknowledgement button is replaced with a timestamp and the mtarep authenticated http username that acknowledged the issue. This prevents multiple users working the same issue unknowingly.
 
 Each column header in the web interface allows for rows sorting (eg: sort by rbl listings, microsoft SNDS filtering or trap hits, hostname, etc..)
 
@@ -36,13 +36,13 @@ Graphing
 --------
 ![Alt text](screenshots/mtarep-graphs-example.png?raw=true)
 
-The included graphing will require you to configure a few things outside the scope of mtarep.
+To enable graphing you will need to configure a few things outside the scope of mtarep.
 
-Sent, bounced, expired and feedback loop count graphs can be easily configured for the domains of your choosing via the 'graph_domains' list array section in the included mtarep-conf.yml configuration file. The graphing is provided by the [HighCharts JS API](http://www.highcharts.com/products/highcharts). The individual bar graphs can be removed from view to allow more granular detail on the remaining bar graphs. This is particularly helpful if your sent total bar graph obfuscates the shit out of the bounce, fbl or expired graphs (deliverability hint: you want this to happen!).
+Sent, bounced, expired and feedback loop bar graphs can be configured for the domains of your choosing via the 'graph_domains' YAML array collection in the mtarep-conf.yml configuration file. The graphing is provided by the [HighCharts JS API](http://www.highcharts.com/products/highcharts). Individual bar graphs can be removed from view by clicking each type of graph in the graphing legend. This allows more granular detail on specific bar graphs, which can be particularly helpful if your sent total bar graph obfuscates the shit out of the bounce, fbl or expired graphs.
 
-The graph data is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, bar graphs will be calculated and rendered by mtarep if the appropriate data exists in the same redis db used by mtarep.
+Each individual bar graph is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, bar graphs will be calculated and rendered by mtarep if the appropriate data exists in the same redis db used by mtarep.
 
-The mtarep graphing web interface will search redis for keys in the format of:
+The mtarep graphing code will search your mtarep redis backend for HINCRBY based keys in the format of:
 
     20140208:expired
     20140208:fbl
@@ -51,23 +51,19 @@ The mtarep graphing web interface will search redis for keys in the format of:
 
 *Where 20140208 is the current date*
 
-These keys contain an incrementing total for each unique domain that has been sent, bounced, expired or feedback-loop received.
+These keys contain an incrementing total for each unique domain that has been sent, bounced, expired or feedback-loop received. The exact redis operation is [HINCRBY](http://redis.io/commands/hincrby).
 
-The exact redis operation is HINCRBY (http://redis.io/commands/hincrby).
-
-Using the redis rubygem you could do the following to increment a counter for each bounced email to gmail.com:
+Using the [redis-rb](https://github.com/redis/redis-rb) ruby client you could do something like this:
 ```ruby
 key = [Time.now.strftime("%Y%m%d")]
 key << 'bounced'
 @redis.hincrby(key.join(':'), 'gmail.com', 1)
 ```
-
-This would update the increment counter on the 'gmail.com' field for redis key '20140208:bounced' by 1 for each bounced 'gmail.com' message that is processed by this code. This could be easily accomplished by creating a custom redis output plugin with [Logstash](https://github.com/logstash/logstash) to filter and ship this data directly from your postfix mail logs.
+The above code would increment a counter for each bounced email to 'gmail.com' under the redis key '20140208:bounced'. This could be accomplished by creating a custom redis output plugin with [Logstash](https://github.com/logstash/logstash) to filter and ship this data directly from your postfix mail logs to either a pubsub broker like [RabbitMQ](https://www.rabbitmq.com/) or perhaps even directly to your redis datastore.
 
 Configuration
 -------------
-Please adjust and remove the '.example' appendage from the included example configs to config.ru, mtarep-thin.yml and mtarep-conf.yml accordingly.
-All configuration of mtarep is managed from the app's main YAML configuration file (mtarep-conf.yml).
+Mtarep comes with example configuration files for Rackup (config.ru), Thin (mtarep-thin.yml) and Mtarep (mtarep-conf.yml) itself. Please adjust each config file according to your environment and remove the '.example' appendage.
 
 Individual mtarep-conf.yml configuration settings:
 
@@ -101,7 +97,7 @@ Individual mtarep-conf.yml configuration settings:
 
    The format of this file must be:
    ```
-   'username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM='
+   username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM=
    ```
    Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
 
@@ -117,7 +113,7 @@ Individual mtarep-conf.yml configuration settings:
 
 ***graph_domains:*** (optional)
 
-   The domains that you want mtarep to render sent, bounced, feedback-loop and expired message counts for.
+   The domains that you want mtarep to render sent, bounced, feedback-loop and expired bat graph totals for.
 
 ***rbls:***
 
@@ -125,7 +121,7 @@ Individual mtarep-conf.yml configuration settings:
 
 ***provider_block_strings:***
 
-   A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs using the other related configuration settings you specified elsewhere in the main mtarep-conf.yml configuration file.
+   A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs for particular rejection text patterns. The rejection patterns for several major email providers are already included in the mtarep-conf.yml.example file.
 
 ***removal_links:***
 
@@ -143,4 +139,4 @@ Install
 - Schedule the mtarep/collector.rb to run every 15 minutes via cron or other scheduling process (see below for details)
 - Browse to a http://hostname:port combination that resolves to what you specified in the mtarep-thin.yml configuration file
 
-You should adjust the scheduling interval for mtarep/collector.rb according to the size of your data, number of MTAs, size of maillogs, etc. Just keep in mind the time it will take each collector run to complete. Mtarep will safely terminate any currently running collector process it detects before it's run begins so there's no overlap in jobs.
+Please adjust the scheduling interval for mtarep/collector.rb according to the size of your data, number of MTAs, size of maillogs, etc. Just keep in mind the time it will take each collector run to complete. Mtarep will safely terminate any currently running collector process it detects before it's run begins so there's no overlap in jobs.
