@@ -99,7 +99,7 @@ Individual mtarep-conf.yml configuration settings:
    ```lua
    username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM=
    ```
-   Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
+   Currently only a SHA1 base64 digest is supported (```ruby Digest::SHA1.base64digest('password')```).
 
 ***mta_map:***
 
