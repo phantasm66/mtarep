@@ -28,6 +28,8 @@ Web Interface
 
 When a provider block or rbl cell contains a listing, it becomes clickable. For provider blocks, when you click a block link a modal appears containing the most recent smtp rejection message from your server's maillog (location and access are configurable in the mtarep-conf.yml file), as well details about the listing and a direct link to that provider's block removal form or instructions. The same scenario occurs for rbl listings but without the maillog info, as mtarep queries rbls directly via a dns lookup.
 
+![Alt text](screenshots/mtarep-modal-example.png?raw=true)
+
 Each issue modal contains an acknowledgement button that can be clicked once you begin working an mtarep reported issue. When the acknowledgement button is clicked, a unique key is inserted back into redis that holds basic details about the issue, including a timestamp and the mtarep authenticated http username. Once acknowledged, the acknowledgement button is replaced with a timestamp and the mtarep authenticated http username that acknowledged the issue. This prevents multiple users working the same issue unknowingly.
 
 Each column header in the web interface allows for rows sorting (eg: sort by rbl listings, microsoft SNDS filtering or trap hits, hostname, etc..)
