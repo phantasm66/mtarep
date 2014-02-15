@@ -43,12 +43,10 @@ Sent, bounced, expired and feedback loop bar graphs can be configured for the do
 Each individual bar graph is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, bar graphs will be calculated and rendered by mtarep if the appropriate data exists in the same redis db used by mtarep.
 
 The mtarep graphing code will search your mtarep redis backend for HINCRBY based keys in the format of:
-
     20140208:expired
     20140208:fbl
     20140208:bounced
     20140208:sent
-
 *Where 20140208 is the current date*
 
 These keys contain an incrementing total for each unique domain that has been sent, bounced, expired or feedback-loop received. The exact redis operation is [HINCRBY](http://redis.io/commands/hincrby).
@@ -97,8 +95,9 @@ Individual mtarep-conf.yml configuration settings:
 
    The format of this file must be:
    ```
-   username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM=
+     username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM=
    ```
+
    Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
 
 ***mta_map:***
@@ -131,8 +130,8 @@ Individual mtarep-conf.yml configuration settings:
 
    A YAML hash collection of any custom documentation you maintain that outlines steps your organization has for resolving a specific mtarep reported issue. These links are used in the modal of a clicked issue in mtarep.
 
-Install
--------
+Installation
+------------
 - Clone this repo
 - Create & customize the rackup (config.ru), thin (mtarep-thin.yml) and mtarep (mtarep-conf.yml) files using the included example files
 - Start your 'thin' web server with your newly customized mtarep-thin.yml file
