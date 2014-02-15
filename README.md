@@ -43,7 +43,7 @@ Sent, bounced, expired and feedback loop bar graphs can be configured for the do
 Each individual bar graph is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, bar graphs will be calculated and rendered by mtarep if the appropriate data exists in the same redis db used by mtarep.
 
 The mtarep graphing code will search your mtarep redis backend for HINCRBY based keys in the format of:
-```json
+```osascript
 20140208:expired
 20140208:fbl
 20140208:bounced
@@ -96,7 +96,7 @@ Individual mtarep-conf.yml configuration settings:
    The absolute path to your mtarep app's http authentication file. This is used for authentcating login access credentials (username/password) to the mtarep web interface.
 
    The format of this file must be:
-   ```json
+   ```apache
    username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM=
    ```
    Currently only a SHA1 base64 digest is supported (Digest::SHA1.base64digest('password')).
