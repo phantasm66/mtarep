@@ -96,7 +96,9 @@ Individual mtarep-conf.yml configuration settings:
    The absolute path to your mtarep app's http authentication file. This is used for authentcating login access credentials (username/password) to the mtarep web interface.
 
    The format of this file must be:
-   ```username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM=```
+   ```lua
+   username:{SHA}ME2JP/+546KPSPZQxQirw0qkUsQRyYWM=
+   ```
    Currently only a SHA1 base64 digest is supported (```Digest::SHA1.base64digest('password')```).
 
 ***mta_map:***
