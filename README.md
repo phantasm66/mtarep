@@ -53,7 +53,7 @@ The mtarep graphing code will search your mtarep redis backend for HINCRBY based
 ```
 *Where 20140208 is the current date*
 
-These keys contain an incrementing total for each unique domain that has been sent, bounced, expired or feedback-loop received. The exact redis operation is [HINCRBY](http://redis.io/commands/hincrby).
+These redis keys should contain an incrementing total for each unique domain that has been sent, bounced, expired or feedback-loop received. The exact redis operation is [HINCRBY](http://redis.io/commands/hincrby).
 
 Using the [redis-rb](https://github.com/redis/redis-rb) ruby client you could do something like this:
 ```ruby
