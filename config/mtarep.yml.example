@@ -1,14 +1,13 @@
 #
 # MTArep main configuration file
 #
-# A mail server reputation statistics dashboard
-#
-# Please review the README or visit - https://github.com/phantasm66/mtarep
+# Please review the README or visit:
+# https://github.com/phantasm66/mtarep
 #
 
 error_log: /var/log/mtarep_errors.log
 redis_server: localhost
-snds_key: 4ba3fdda-edb1-47c0-8ff5-16dacb3951f4 (this is a non working example key)
+snds_key: <microsoft generated snds data access key>
 maillog_path: /var/log/maillog
 ssh_key: /root/.ssh/mtarep.private
 ssh_user: mtarep
