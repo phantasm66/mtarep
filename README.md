@@ -143,5 +143,5 @@ Installation
 
 Data Collection Schedule
 ------------------------
-You may need to adjust the cron scheduling interval for mtarep/collector.rb according to the amount of data you want mtarep to collect, the number and size of your MTA maillogs, etc. Before you schedule the cron, it might be wise to do a manual collection run with your production mtarep-conf.yml and time it. The collector has logic built in that allows it to safely terminate any previously running collector processes, so as to avoid collection run overlaps, collisions, etc.
+You may need to adjust your cron scheduling interval for mtarep/collector.rb according to the amount of data you want mtarep to collect, the number and size of your MTA maillogs, etc. Before you schedule the cron, it might be wise to do a manual collection run with your production mtarep-conf.yml and time it. The collector has logic built in that allows it to safely terminate any previously running collector processes, so as to avoid collection run overlaps, collisions, etc.
 
