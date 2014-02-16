@@ -26,7 +26,6 @@ rbls:
  - bl.score.senderscore.com
  - bl.spamcannibal.org
  - bl.spamcop.net
- - block.stopspam.org
  - cbl.abuseat.org
  - cidr.bl.mcafee.com
  - db.wpbl.info
@@ -69,7 +68,6 @@ removal_links:
   b.barracudacentral.org: 'http://www.barracudacentral.org/lookups'
   bl.mailspike.net: 'http://mailspike.org/anubis/lookup.html'
   bl.spamcannibal.org: 'http://www.spamcannibal.org/cannibal.cgi'
-  block.stopspam.org: 'http://stopspam.org/rblcheck/index.php'
   cbl.abuseat.org: 'http://cbl.abuseat.org/lookup.cgi'
   dnsbl-1.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
   dnsbl-2.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
