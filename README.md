@@ -17,7 +17,7 @@ The following data is collected and displayed for each postfix MTA you report on
 
 * [Return Path Sender Score](https://www.senderscore.org/)
 * [Microsoft SNDS (Smart Network Data Services)](https://postmaster.live.com/snds/)
-* Postfix Maillog SMTP Rejection Blocks
+* Postfix SMTP Client Rejections (Parsed Mail Logs)
 * RBL/DNSBL Listings
 
 All the data is collected and inserted into a redis data store whenever the collector completes a run. The collector (collector.rb) can be scheduled via cron. The sinatra webapp (app.rb) handles generating the HTML and retrieving the data from redis.
