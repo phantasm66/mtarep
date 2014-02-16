@@ -8,7 +8,7 @@ require 'yaml'
 
 include Collector::Runner
 
-config = YAML.load_file('config/mtarep-conf.yml')
+config = YAML.load_file('config/mtarep.yml')
 ENV['ERROR_LOG'] = config['error_log']
 
 run_collector({ :active_pid => Process.pid,

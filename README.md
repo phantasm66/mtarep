@@ -26,7 +26,7 @@ Web Interface
 -------------
 ![Alt text](screenshots/mtarep-webui-example.png?raw=true)
 
-When a provider block or rbl cell contains a listing, it becomes clickable. For provider blocks, when you click a block link a modal appears containing the most recent smtp rejection message from your server's maillog (location and access are configurable in the mtarep-conf.yml file), as well details about the listing and a direct link to that provider's block removal form or instructions. The same scenario occurs for rbl listings but without the maillog info, as mtarep queries rbls directly via a dns lookup.
+When a provider block or rbl cell contains a listing, it becomes clickable. For provider blocks, when you click a block link a modal appears containing the most recent smtp rejection message from your server's maillog (location and access are configurable in the mtarep.yml file), as well details about the listing and a direct link to that provider's block removal form or instructions. The same scenario occurs for rbl listings but without the maillog info, as mtarep queries rbls directly via a dns lookup.
 
 ![Alt text](screenshots/mtarep-modal-example.png?raw=true)
 
@@ -40,7 +40,7 @@ Graphing
 
 To enable graphing you will need to configure a few things outside the scope of mtarep.
 
-Sent, bounced, expired and feedback loop bar graphs can be configured for the domains of your choosing via the 'graph_domains' YAML array collection in the mtarep-conf.yml configuration file. The graphing is provided by the [HighCharts JS API](http://www.highcharts.com/products/highcharts). Individual bar graphs can be removed from view by clicking each type of graph in the graphing legend. This allows more granular detail on specific bar graphs, which can be particularly helpful if your sent total bar graph obfuscates the shit out of the bounce, fbl or expired graphs.
+Sent, bounced, expired and feedback loop bar graphs can be configured for the domains of your choosing via the 'graph_domains' YAML array collection in the mtarep.yml configuration file. The graphing is provided by the [HighCharts JS API](http://www.highcharts.com/products/highcharts). Individual bar graphs can be removed from view by clicking each type of graph in the graphing legend. This allows more granular detail on specific bar graphs, which can be particularly helpful if your sent total bar graph obfuscates the shit out of the bounce, fbl or expired graphs.
 
 Each individual bar graph is calculated from midnight on the current day and continues to be calculated until 11:59pm on that same day. The data used to calculate the sent, bounced, fbl and expired bar graphs is not *collected* by mtarep. However, bar graphs will be calculated and rendered by mtarep if the appropriate data exists in the same redis db used by mtarep.
 
@@ -65,9 +65,9 @@ The above code would increment a counter for each bounced email to 'gmail.com' u
 
 Configuration
 -------------
-Mtarep comes with example configuration files for Rackup (config.ru), Thin (mtarep-thin.yml) and Mtarep (mtarep-conf.yml) itself. Please adjust each config file according to your environment and remove the '.example' appendage.
+Mtarep comes with example configuration files for Rackup (config.ru), Thin (thin.yml) and Mtarep (mtarep.yml) itself. Please adjust each config file according to your environment and remove the '.example' appendage.
 
-Individual mtarep-conf.yml configuration settings:
+Individual mtarep.yml configuration settings:
 
 ***error_log:***
 
@@ -123,7 +123,7 @@ Individual mtarep-conf.yml configuration settings:
 
 ***provider_block_strings:***
 
-   A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs for particular rejection text patterns. The rejection patterns for several major email providers are already included in the mtarep-conf.yml.example file.
+   A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs for particular rejection text patterns. The rejection patterns for several major email providers are already included in the mtarep.yml.example file.
 
 ***removal_links:***
 
@@ -136,12 +136,14 @@ Individual mtarep-conf.yml configuration settings:
 Installation
 ------------
 - git clone https://github.com/phantasm66/mtarep.git
-- create & customize config.ru, mtarep-thin.yml and mtarep-conf.yml configs using the included example configs
-- start thin web server
+- create config.ru, thin.yml and mtarep.yml configs from included example configs
+- start the thin web server
+- check the specified mtarep error_log location for any errors
+- run mtarep/collector.rb manually to test your mtarep.yml (errors display on stderr)
 - cron mtarep/collector.rb to run every 15 minutes (additional details below)
-- once the collector has run at least once, go to http://hostname:port (according to your mtarep-thin.yml config file)
+- go to http://hostname:port (according to your thin.yml config file)
 
 Data Collection Schedule
 ------------------------
-You may need to adjust your cron scheduling interval for mtarep/collector.rb according to the amount of data you want mtarep to collect, the number and size of your MTA maillogs, etc. Before you schedule the cron, it might be wise to do a manual collection run with your production mtarep-conf.yml and time it. The collector has logic built in that allows it to safely terminate any previously running collector processes, so as to avoid collection run overlaps, collisions, etc.
+You may need to adjust your cron scheduling interval for mtarep/collector.rb according to the amount of data you want mtarep to collect, the number and size of your MTA maillogs, etc. Before you schedule the cron, it might be wise to do a manual collection run with your production mtarep.yml and time it. The collector has logic built in that allows it to safely terminate any previously running collector processes, so as to avoid collection run overlaps, collisions, etc.
 

@@ -14,7 +14,7 @@ include RedisWorker
 include Collector::Hosts
 
 configure do
-  hashed_config_file = YAML.load_file('config/mtarep-conf.yml')
+  hashed_config_file = YAML.load_file('config/mtarep.yml')
   set :config_options, hashed_config_file
 
   set :public_folder, Proc.new { File.join(root, 'vendor') }
