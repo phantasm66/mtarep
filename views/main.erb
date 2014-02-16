@@ -124,35 +124,13 @@
                             <h3 style="color: white;"><%= provider.capitalize %> Block Removal Info</h3>
                           </div>
                           <div class="modal-body">
-                            <% if provider == 'verizon' %>
-                              <p><strong>Send an email to<br>
-                              <h4>whitelist@verizononline.net and abuse@verizon.net</strong></h4><br>
-                              <u><strong>Subject: </strong>IP Block Removal Request For <%= mta_ip %><br></u>
-                              <br>
-                              BEGIN MESSAGE -------
-                              <br>
-                              <%= mta_ip %> is receiving the following SMTP response from Verizon mail servers:
+                            <h4><strong>The log entry below may be required for a removal request</strong></h4>
+                            <% @assistance_links.each_pair do |assistance_provider, assistance_link| %>
+                              <% next unless assistance_provider = provider %>
+                              <em>The following link details steps that will assist you with the <%= provider %> removal form:</em><br>
+                              <a href="<%= assistance_link %>" target="_blank"><%= provider %> listing/form submission assistance</a>
                               <br>
                               <br>
-                              <font face="monaco"><%= sample_logline.to_a.flatten[1] %></font>
-                              <br>
-                              &nbsp;&nbsp;- All of our IPs have proper forward/reverse DNS and SPF records<br>
-                              &nbsp;&nbsp;- All of our IPs sign each message with a verifiable DKIM signtaure<br>
-                              <br>
-                              We are not an open relay, nor do we receive connections to our sending IPs
-                              <br>
-                              <br>
-                              I would like to request a removal of the IP block against <%= mta_ip %><br>
-                              END MESSAGE -------<br></p>
-                            <% else %>
-                              <h4><strong>The log entry below may be required for a removal request</strong></h4>
-                              <% @assistance_links.each_pair do |assistance_provider, assistance_link| %>
-                                <% next unless assistance_provider = provider %>
-                                <em>The following link details steps that will assist you with the <%= provider %> removal form:</em><br>
-                                <a href="<%= assistance_link %>" target="_blank"><%= provider %> listing/form submission assistance</a>
-                                <br>
-                                <br>
-                              <% end %>
                               <p><font face="monaco"><%= sample_logline.to_a.flatten[1] %></font></p>
                               <p><u>Blocked IP</u><br>
                               <strong style="color: red;"><%= mta_ip %></strong></p>
