@@ -1,6 +1,6 @@
 MTAREP
 ================================
-Collect and report on your mail server reputations, deliverability and rbl statistics.
+A pure ruby webapp to collect and report mail server reputations, deliverability and rbl statistics.
 
 Requirements
 ------------

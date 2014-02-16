@@ -63,7 +63,7 @@ removal_links:
   comcast: 'http://postmaster.comcast.net/block-removal-request.html'
   cox: 'http://postmaster.cox.net/confluence/display/postmaster/Contact+US+Form'
   earthlink: 'http://support.earthlink.net/articles/email/email-blocked-by-earthlink.php'
-  verizon: 'https://confluence.bluestatedigital.com/display/~jwebb/Verizon+Block+Removal+Email+Template'
+  verizon: 'http://my.verizon.com/micro/whitelist/RequestForm.aspx?id=isp'
   gmail: 'http://support.google.com/mail/bin/request.py?&contact_type=msgdelivery'
   zen.spamhaus.org: 'http://www.spamhaus.org/query/ip/'
   bl.spamcop.net: 'http://www.spamcop.net/w3m?action=checkblock&ip='
