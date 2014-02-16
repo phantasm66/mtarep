@@ -135,11 +135,11 @@ Individual mtarep-conf.yml configuration settings:
 
 Installation
 ------------
-- Clone this repo
-- Create & customize the rackup (config.ru), thin (mtarep-thin.yml) and mtarep (mtarep-conf.yml) files using the included example files
-- Start your 'thin' web server with your newly customized mtarep-thin.yml file
-- Schedule the mtarep/collector.rb to run every 15 minutes via cron or other scheduling process (see below for details)
-- Browse to a http://hostname:port combination that resolves to what you specified in the mtarep-thin.yml configuration file
+- git clone https://github.com/phantasm66/mtarep.git
+- create & customize config.ru, mtarep-thin.yml and mtarep-conf.yml configs using the included example configs
+- start thin web server
+- cron mtarep/collector.rb to run every 15 minutes (additional details below)
+- once the collector has run at least once, go to http://hostname:port (according to your mtarep-thin.yml config file)
 
 Data Collection Schedule
 ------------------------
