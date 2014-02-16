@@ -1,0 +1,4 @@
+config/config.ru
+config/mtarep.yml
+config/thin.yml
+config/tmp
