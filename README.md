@@ -65,9 +65,9 @@ The above code would increment a counter for each bounced email to 'gmail.com' u
 
 Configuration
 -------------
-Mtarep comes with example configuration files for Rackup (config.ru), Thin (thin.yml) and Mtarep (mtarep.yml) itself. Please adjust each config file according to your environment and remove the '.example' appendage.
+Mtarep comes with example configuration files for rackup (config.ru), thin (thin.yml) and mtarep itself (mtarep.yml). Please copy the example configs without the '.example' appendage and adjust each config according to your environment.
 
-Individual mtarep.yml configuration settings:
+The individual mtarep.yml configuration file settings are as follows:
 
 ***error_log:***
 
