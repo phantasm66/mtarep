@@ -141,4 +141,7 @@ Installation
 - Schedule the mtarep/collector.rb to run every 15 minutes via cron or other scheduling process (see below for details)
 - Browse to a http://hostname:port combination that resolves to what you specified in the mtarep-thin.yml configuration file
 
-Please adjust the scheduling interval for mtarep/collector.rb according to the size of your data, number of MTAs, size of maillogs, etc. Just keep in mind the time it will take each collector run to complete. Mtarep will safely terminate any currently running collector process it detects before it's run begins so there's no overlap in jobs.
+Data Collection Schedule
+------------------------
+You may need to adjust the cron scheduling interval for mtarep/collector.rb according to the amount of data you want mtarep to collect, the number and size of your MTA maillogs, etc. Before you schedule the cron, it might be wise to do a manual collection run with your production mtarep-conf.yml and time it. The collector has logic built in that allows it to safely terminate any previously running collector processes, so as to avoid collection run overlaps, collisions, etc.
+
