@@ -138,7 +138,7 @@ Installation
 - git clone https://github.com/phantasm66/mtarep.git
 - create config.ru, thin.yml and mtarep.yml configs from included example configs
 - start the thin web server
-- check the specified mtarep error_log location for any errors
+- check the specified mtarep *error_log* location for any errors
 - run mtarep/collector.rb manually to test your mtarep.yml (errors display on stderr)
 - cron mtarep/collector.rb to run every 15 minutes (additional details below)
 - go to http://hostname:port (according to your thin.yml config file)
