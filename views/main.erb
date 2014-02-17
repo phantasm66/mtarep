@@ -124,18 +124,15 @@
                             <h3 style="color: white;"><%= provider.capitalize %> Block Removal Info</h3>
                           </div>
                           <div class="modal-body">
-                            <h4><strong>The log entry below may be required for a removal request</strong></h4>
-                            <% @assistance_links.each_pair do |assistance_provider, assistance_link| %>
-                              <% next unless assistance_provider = provider %>
-                              <em>The following link details steps that will assist you with the <%= provider %> removal form:</em><br>
-                              <a href="<%= assistance_link %>" target="_blank"><%= provider %> listing/form submission assistance</a>
-                              <br>
-                              <br>
-                              <p><font face="monaco"><%= sample_logline.to_a.flatten[1] %></font></p>
-                              <p><u>Blocked IP</u><br>
-                              <strong style="color: red;"><%= mta_ip %></strong></p>
+                            <h4><strong><u>smtp rejection log</u></strong></h4>
+                            <p><font face="monaco"><%= sample_logline.to_a.flatten[1] %></font></p>
+                            <br>
+                            <strong>blocked ip address: </strong><strong style="color: red;"><%= mta_ip %></strong></p>
+                            <br>
+                            <% if @assistance_links[provider] %>
+                              <a href="<%= @assistance_links[provider] %>" target="_blank"><strong><%= provider %> removal request help</strong></a>
                             <% end %>
-                            <% redis_field_value = provider %>
+                          <% redis_field_value = provider %>
                       <% else %>
                         <% listing = redis_field_value.split[0] %>
                         <a href="#<%= listing.gsub('.', '')+modal_id %>Modal" data-toggle="modal" style="color: red;"><b><u><%= listing %></u></b></a>
@@ -173,8 +170,8 @@
                           <br>
                           <br>
                         <% end %>
-                        <p>Please click the 'Acknowledge' button once you have requested a removal<br>
-                           This will let MTA&#8226;Rep know that the removal process has been intiated</p>
+                        <p>Please click the acknowledge button once you have requested a removal<br>
+                           This will let others know that the removal process has already been intiated</p>
                         </div>
                         <div class="modal-footer">
                           <form action="/ack" method="post">
