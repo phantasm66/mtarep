@@ -117,25 +117,24 @@
                       <% if redis_field == 'provblocks' %>
                         <% provider = redis_field_value.split(':')[0] %>
                         <% sample_logline = @redis.hgetall(redis_field_value.split(':')[1]) %>
-                        <a href="#<%= provider+modal_id %>Modal" data-toggle="modal" style="color: red;"><b><u><%= provider %></u></b></a>
+                        <a href="#<%= provider+modal_id %>Modal" data-toggle="modal" style="color: red;"><b><u><%= provider %><br></u></b></a>
                         <div id="<%= provider+modal_id %>Modal" class="modal hide fade">
                           <div class="modal-header" style="background-color: #82B0E1;">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h3 style="color: white;"><%= provider.capitalize %> Block Removal Info</h3>
                           </div>
                           <div class="modal-body">
-                            <h4><strong><u>smtp rejection log</u></strong></h4>
-                            <p><font face="monaco"><%= sample_logline.to_a.flatten[1] %></font></p>
-                            <br>
-                            <strong>blocked ip address: </strong><strong style="color: red;"><%= mta_ip %></strong></p>
-                            <br>
+                            <h3><strong>SMTP rejection log</strong></h4>
+                            <p style="padding: 6px; color: #00CD00; background-color: #464646; border: #8C8C8C 4px solid; border-radius:10px;">
+                            <font face="monaco"><%= sample_logline.to_a.flatten[1] %></font></p>
+                            <h4><strong>blocked ip address: <%= mta_ip %></strong></h4>
                             <% if @assistance_links[provider] %>
-                              <a href="<%= @assistance_links[provider] %>" target="_blank"><strong><%= provider %> removal request help</strong></a>
+                              <a href="<%= @assistance_links[provider] %>" target="_blank"><strong>click here for <%= provider %> removal assistance<br></strong></a>
                             <% end %>
                           <% redis_field_value = provider %>
                       <% else %>
                         <% listing = redis_field_value.split[0] %>
-                        <a href="#<%= listing.gsub('.', '')+modal_id %>Modal" data-toggle="modal" style="color: red;"><b><u><%= listing %></u></b></a>
+                        <a href="#<%= listing.gsub('.', '')+modal_id %>Modal" data-toggle="modal" style="color: red;"><b><u><%= listing %><br></u></b></a>
                         <div id="<%= listing.gsub('.', '')+modal_id %>Modal" class="modal hide fade">
                           <div class="modal-header" style="background-color: #82B0E1;">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -144,10 +143,10 @@
                           <div class="modal-body">
                             <% if listing =~ /spamhaus/ %>
                               <% if @assistance_links['spamhaus'] %>
-                                <p><a style="color: red;" href="<%= @assistance_links['spamhaus'] %>" target="_blank"><u>Spamhaus listing assistance</u></a></p>
+                                <p><a style="color: red;" href="<%= @assistance_links['spamhaus'] %>" target="_blank"><u>spamhaus listing assistance</u></a></p>
                               <% end %>
 
-                              <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u>&#8226;Spamhaus listing lookup/info&#8226;</u></a>
+                              <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u>spamhaus listing lookup/info</u></a>
                               <br>
                               <br>
                             <% elsif listing =~ /spamcop/ %>
@@ -166,12 +165,9 @@
                       <% if redis_ack.nil? %>
                         <% @provider_block_strings.each_pair do |provider_name, block_string| %>
                           <% next unless redis_field_value == provider_name %>
-                          <a href=<%= removal_links[provider_name] %> target="_blank"><strong><u>&#8226;click here to initiate a removal request&#8226;</u></strong></a>
-                          <br>
-                          <br>
+                          <a href=<%= removal_links[provider_name] %> target="_blank"><h4><strong style="color: red;"><u>initiate a removal request</u></strong></h4></a>
                         <% end %>
-                        <p>Please click the acknowledge button once you have requested a removal<br>
-                           This will let others know that the removal process has already been intiated</p>
+                        <p>click the acknowledge button once you have requested a block removal</p>
                         </div>
                         <div class="modal-footer">
                           <form action="/ack" method="post">
