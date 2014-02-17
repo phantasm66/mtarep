@@ -44,10 +44,10 @@
             </ul>
             <div class="tab-content" style="color: #000000; padding-bottom: 9px; border-bottom: 1px solid #ddd;">
               <div class="tab-pane active" id="tab1">
-                <p>All of the data displayed on this page is updated every 15 minutes and stored in a persistent redis database. The data is aggregated by a collector that runs on our <em>bounce</em> server. Please note that Microsoft SNDS (Outlook/MSN/Live) does not provide us with data newer than 24 hours.<br><br>All table cells w/ <b style="color:red">red</b> text can be clicked for removal instructions.<br><br>Please use <strong style="color: red;">platform@bluestatedigital.com</strong> for all removal request communications.</p>
+                <p>All of the data displayed on this page is collected and updated by mtarep according to a scheduled interval. Please note that Microsoft SNDS (Outlook/MSN/Live) data is 24 hours old.<br><br>All table cells w/ <b style="color:red">red</b> text can be clicked for removal instructions. Any modifications to the main mtarep.yml configuration file will be picked up automatically by mtarep before it's subsequent collection run (according to your scheduled collection cron interval). The collection cron interval is explained in more detail in the README for mtarep.<br><br><p>
               </div>
               <div class="tab-pane" id="tab2">
-                <p>After submitting a removal request, please click the 'Acknowledge' button at the bottom right of the listing's modal. This will generate an ack message containing the username and time of the ack and store it in redis. The ack is then displayed in place of the acknowledge button on the listing's modal. An acknowledgement will be cleared automatically once mtarep detects the issue is resolved.<br><br>Nagios will alert only on spamhaus listings and provider blocks. However, nagios will always check for an existing acknowledgement before paging on the issue.</p>
+                <p>After submitting a removal request, please click the 'Acknowledge' button at the bottom right of the listing's modal. This will generate an ack message containing the username and time of the ack and store it in redis. The ack is then displayed in place of the acknowledge button on the listing's modal. An acknowledgement will be cleared automatically once mtarep detects the issue is resolved.<br><br></p>
               </div>
               <div class="tab-pane" id="tab3">
                 <p>A <strong style="color:red">Red</strong> <strong>Highlighted Row Indicates One Of The Following Has Occurred</strong></p>
@@ -83,7 +83,7 @@
                 <br>
               </div>
               <div class="tab-pane" id="tab5">
-                <p>We check our MTA IP addresses every 15 minutes against the list of RBLs below. There are many RBL lists and maintainers, but only a handful are widely referenced as a block list by internet and email service providers. Any modifications to this list can be done directly in the rbls.rb library in the 'mtarep' git repo. The list is then updated in our redis backend under the 'rblhosts' key, which is re-read and displayed on this page.</p>
+                <p>Mtarep queries RBL lists according to the scheduled collection interval. checks our MTA IP addresses every 15 minutes against the list of RBLs below. There are many RBL lists and maintainers, but only a handful are widely referenced by internet and email service providers. Any modifications to this list can be done directly in the main mtarep.yml configuration file's rbls array collection, which will be picked up automatically by mtarep during it's subsequent collection run (according to your scheduled collection cron interval). The collection cron interval is explained in more detail in the README for mtarep.</p>
                 <br>
                 <h4 style="color: red;">RBL Lists</h4>
                 <% rbl_list = @redis.lrange('rbls', 0, -1) %>
