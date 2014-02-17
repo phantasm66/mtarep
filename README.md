@@ -1,4 +1,4 @@
-MTAREP
+mtarep
 ================================
 A ruby webapp to collect and report mail server reputations, deliverability and rbl statistics. The UI is powered by [Sinatra](https://github.com/sinatra/sinatra/) and the backend is provided by [Redis](http://redis.io/). If you follow the installation steps outlined in this README, you should be up and running within 15 minutes.
 
