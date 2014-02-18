@@ -24,7 +24,7 @@
                 text: 'click legend to isolate specific graphs'
               },
               xAxis: {
-                categories: ['Yahoo', 'Hotmail', 'Gmail', 'AOL', 'Comcast'],
+                categories: <%= @graph_domains %>,
                 title: {
                   text: null
                 }
@@ -68,19 +68,19 @@
               },
               series: [{
                 name: 'Sent',
-                data: [<%= @sent_data %>],
+                data: <%= @sent_data %>,
                 color: '#86A4BA'
               }, {
                 name: 'Bounced',
-                data: [<%= @bounced_data %>],
+                data: <%= @bounced_data %>,
                 color: '#A33535'
               }, {
                 name: 'FBLs',
-                data: [<%= @fbl_data %>],
+                data: <%= @fbl_data %>,
                 color: '#F99B20'
               }, {
                 name: 'Expired',
-                data: [<%= @expired_data %>],
+                data: <%= @expired_data %>,
                 color: '#BDA0CB'
               }]
             });

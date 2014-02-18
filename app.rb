@@ -39,7 +39,7 @@ before do
   @redis = redis_connection(settings.config_options['redis_host'])
 
   mta_map(settings.config_options['mta_map']).each {|hash| @mta_keys << hash[:ip]}
-  graph_domains = settings.config_options['graph_domains']
+  @graph_domains = settings.config_options['graph_domains']
   date = Time.now.to_s.split[0].gsub('-', '')
 
   fbl = []
@@ -57,7 +57,6 @@ before do
 
     counts = []
     graph_domains.each {|domain| counts << results[domain]}
-    counts = counts.join(', ')
 
     return counts
   end
@@ -79,7 +78,7 @@ before do
   end
 
   graph_keys_new.each do |graph_key|
-    graph_domains.each do |domain|
+    @graph_domains.each do |domain|
       count = @redis.hget(graph_key, domain)
       count = 0 if count.nil?
       count = count.to_i
@@ -96,10 +95,10 @@ before do
     end
   end
 
-  @fbl_data = graph_counts(fbl, graph_domains)
-  @sent_data = graph_counts(sent, graph_domains)
-  @bounced_data = graph_counts(bounced, graph_domains)
-  @expired_data = graph_counts(expired, graph_domains)
+  @fbl_data = graph_counts(fbl, @graph_domains)
+  @sent_data = graph_counts(sent, @graph_domains)
+  @bounced_data = graph_counts(bounced, @graph_domains)
+  @expired_data = graph_counts(expired, @graph_domains)
 end
 
 get '/' do
