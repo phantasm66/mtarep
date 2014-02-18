@@ -57,6 +57,7 @@ before do
 
     counts = []
     graph_domains.each {|domain| counts << results[domain]}
+    counts = counts.join(', ')
 
     return counts
   end
