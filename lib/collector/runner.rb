@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'hosts'
 require 'rbls'
 require 'snds'

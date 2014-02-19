@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# encoding: utf-8
 
 $:.unshift File.expand_path('lib')
 $:.unshift File.expand_path('lib/collector')

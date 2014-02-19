@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'net/ssh'
 require 'timeout'
 require 'error_logger'

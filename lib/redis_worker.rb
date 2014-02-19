@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'redis'
 require 'error_logger'
 
