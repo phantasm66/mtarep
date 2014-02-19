@@ -151,7 +151,7 @@ get '/version' do
     end
   end
 
-  @this_version = this_version
+  @this_version = settings.this_version
   @latest_version = latest_version
 
   erb :version
