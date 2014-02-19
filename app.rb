@@ -124,6 +124,7 @@ get '/graphs' do
         bounced << {domain => count}
       end
     end
+  end
 
   erb :graphs
 end
