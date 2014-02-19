@@ -126,6 +126,11 @@ get '/graphs' do
     end
   end
 
+  @fbl_data = graph_counts(fbl, @graph_domains)
+  @sent_data = graph_counts(sent, @graph_domains)
+  @bounced_data = graph_counts(bounced, @graph_domains)
+  @expired_data = graph_counts(expired, @graph_domains)
+
   erb :graphs
 end
 
