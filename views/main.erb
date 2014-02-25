@@ -44,25 +44,26 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span1"></div>
-        <div class="span10">
+        <div class="span12">
         <br>
         <br>
         <table id="main-table" class="table table-bordered table-hover">
           <thead>
             <tr>
-              <th style="text-align: center; background: #ffffff; border: 0;">
-              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By MTA Name">host</a></th>
-              <th style="text-align: center; background: #ffffff; border: 0;">
-              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Return Path Sender Score">sender score</a></th>
-              <th style="text-align: center; background: #ffffff; border: 0;">
-              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Filter Color Status">snds filtering</a></th>
-              <th style="text-align: center; background: #ffffff; border: 0;">
-              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Total Trap Counts">snds traps</a></th>
-              <th style="text-align: center; background: #ffffff; border: 0;">
-              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Provider Blocks">provider blocks</a></th>
-              <th style="text-align: center; background: #ffffff; border: 0;">
-              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By RBL Listings">rbl listings</a></th>
+              <th style="text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By MTA Name">Hostname</a></th>
+              <th style="text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Return Path Sender Score">Sender Score</a></th>
+              <th style="text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Filter Color Status">SNDS Filtering</a></th>
+              <th style="text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Total Trap Counts">SNDS Trap Hits</a></th>
+              <th style="text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Brightmail Reputation">Brightmail Reputation</a></th>
+              <th style="text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Provider Blocks">Provider Blocks</a></th>
+              <th style="text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By RBL Listings">RBL Listings</a></th>
             </tr>
           </thead>
           <tbody>
@@ -71,12 +72,16 @@
               <% listings = mta_fields_hash['listings'] %>
               <% provblocks = mta_fields_hash['provblocks'] %>
               <% senderscore = mta_fields_hash['senderscore'] %>
+              <% brightmail = mta_fields_hash['brightmail'] %>
+
               <% if senderscore == 'no score' %>
                 <% senderscore = 100 %>
               <% else %>
                 <% senderscore = senderscore.to_i %>
               <% end %>
+
               <% sndstraps = mta_fields_hash['sndstraps'] %>
+
               <% if sndstraps == 'no data' %>
                 <% sndstraps = 0 %>
               <% else %>
@@ -88,6 +93,8 @@
               <% elsif sndstraps >= 12 %>
                 <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
               <% elsif color == 'red' %>
+                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% elsif brightmail == 'bad' %>
                 <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
               <% elsif listings =~ /(spamhaus|spamcop)/ %>
                 <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
@@ -105,14 +112,14 @@
               <% provider = '' %>
               <% mta_fields_hash.each_pair do |redis_field, redis_value| %>
                 <td style="text-align: center;">
-                <% if redis_field =~ /(provblocks|listings)/ %>
+                <% if redis_field =~ /(provblocks|listings|brightmail)/ %>
                   <% multiple_redis_field_values = redis_value.split(',') %>
                   <% redis_field_value_count = multiple_redis_field_values.count %>
                   <% modal_id = mta_ip.gsub('.','') %>
                   <% iterator_counter = 0 %>
                   <% multiple_redis_field_values.each do |redis_field_value| %>
                     <% iterator_counter += 1 %>
-                    <% if redis_field_value =~ /(no\sblocks|error|unlisted)/ %>
+                    <% if redis_field_value =~ /(no\sblocks|error|unlisted|good|neutral)/ %>
                       <%= redis_field_value %>
                     <% else %>
                       <% if redis_field == 'provblocks' %>
@@ -122,24 +129,24 @@
                         <div id="<%= provider+modal_id %>Modal" class="modal hide fade">
                           <div class="modal-header" style="background-color: #82B0E1;">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h3 style="color: white;"><%= provider.capitalize %> Block Removal Info</h3>
+                            <h3 style="color: white;"><%= provider.capitalize %> Block Info</h3>
                           </div>
                           <div class="modal-body">
                             <h3><strong>SMTP rejection log</strong></h4>
-                            <p style="padding: 6px; color: #50D050; background-color: #646464; border: #3C3C3C 4px solid; border-radius:10px;">
+                            <p style="padding: 6px; color: #B96400; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;">
                             <font face="monaco"><%= sample_logline.to_a.flatten[1] %></font></p>
                             <h4><strong>blocked ip address: <%= mta_ip %></strong></h4>
                             <% if @assistance_links[provider] %>
                               <a href="<%= @assistance_links[provider] %>" target="_blank"><strong>click here for <%= provider %> removal assistance<br></strong></a>
                             <% end %>
                           <% redis_field_value = provider %>
-                      <% else %>
+                      <% elsif redis_field == 'listings' %>
                         <% listing = redis_field_value.split[0] %>
                         <a href="#<%= listing.gsub('.', '')+modal_id %>Modal" data-toggle="modal" style="color: red;"><b><u><%= listing %><br></u></b></a>
                         <div id="<%= listing.gsub('.', '')+modal_id %>Modal" class="modal hide fade">
                           <div class="modal-header" style="background-color: #82B0E1;">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h3 style="color: white;">RBL Removal Info</h3>
+                            <h3 style="color: white;">RBL Listing Info</h3>
                           </div>
                           <div class="modal-body">
                             <% if listing =~ /spamhaus/ %>
@@ -161,10 +168,25 @@
                               <p>Please lookup ip address <strong style="color: red;"><%= mta_ip %></strong> on the <a href=<%= removal_links[redis_field_value] %> target="_blank"><u><%= listing %></u></a> list query page and submit a removal request.</p>
                             <% end %>
                             <% redis_field_value = listing %>
+                      <% elsif redis_field == 'brightmail' %>
+                        <a href="#<%= redis_field+modal_id %>Modal" data-toggle="modal" style="color: red;"><b><u><%= redis_field_value %><br></u></b></a>
+                        <div id="<%= redis_field+modal_id %>Modal" class="modal hide fade">
+                          <div class="modal-header" style="background-color: #82B0E1;">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h3 style="color: white;">Brightmail Negative Reputation Info</h3>
+                          </div>
+                          <div class="modal-body">
+                            <p>Symantec has listed <strong><%= mta_ip %></strong> due to a negative listing with the Brightmail reputation service. There are several methods Symantec uses for listing a mail server IP address. A negative listing with the Brightmail reputation service is the only one that can be mitigated via a removal request.<br><br><strong>Brightmail reputation service detail</strong></p>
+                            <p style="padding: 6px; color: #B96400; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;">
+                            <font face="monaco">Brightmail has detected suspicious activity, such as spam or malicious code, originating from <%= mta_ip %></font></p>
+                            <% if @assistance_links['brightmail'] %>
+                              <a href="<%= @assistance_links['brightmail'] %>" target="_blank"><strong>click here for brightmail negative reputation assistance<br></strong></a>
+                            <% end %>
+                          <% redis_field_value = 'brightmail' %>
                       <% end %>
                       <% redis_ack = @redis.get('ack-'+redis_field_value+'-'+mta_ip) %>
                       <% if redis_ack.nil? %>
-                        <% @provider_block_strings.each_pair do |provider_name, block_string| %>
+                        <% removal_links.each_pair do |provider_name, removal_link| %>
                           <% next unless redis_field_value == provider_name %>
                           <a href=<%= removal_links[provider_name] %> target="_blank"><h4><strong style="color: red;"><u>initiate a removal request</u></strong></h4></a>
                         <% end %>
@@ -193,8 +215,9 @@
             <% end %>
           </tbody>
         </table>
+        <br>
+        <br>
         </div>
-        <div class="span1"></div>
       </div>
     </div>
   </div>

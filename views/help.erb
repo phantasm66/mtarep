@@ -31,8 +31,8 @@
     <br>
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span2"></div>
-        <div class="span8">
+        <div class="span1"></div>
+        <div class="span10">
           <br>
           <br>
           <div class="tabbable" style="margin-bottom: 18px;">
@@ -42,58 +42,68 @@
               <li class=""><a href="#tab3" data-toggle="tab"><strong>Row Color Definitions</strong></a></li>
               <li class=""><a href="#tab4" data-toggle="tab"><strong>Column Cell Definitions</strong></a></li>
               <li class=""><a href="#tab5" data-toggle="tab"><strong>RBL Lists</strong></a></li>
+              <li class=""><a href="#tab6" data-toggle="tab"><strong>Brightmail Reputation</strong></a></li>
             </ul>
             <div class="tab-content" style="color: #000000; padding-bottom: 9px; border-bottom: 1px solid #ddd;">
               <div class="tab-pane active" id="tab1">
-                <p>All mtarep data is collected and updated according to a cron scheduled collection interval. Please note that Microsoft SNDS (Outlook/MSN/Live) data is 24 hours old.<br><br>All table cells w/ <b style="color:red">red</b> text can be clicked for removal instructions.<br><br>Any modifications to the main mtarep.yml configuration file will be picked up automatically by mtarep before it's subsequent collection run (according to the cron scheduled collection interval). The collector's cron scheduled collection interval is explained in more detail in the README for mtarep.<br><br><p>
+                <p style="color: #949494; font-size: 120%;">All mtarep data is collected and updated according to a cron scheduled collection interval.<br><br>Please note that Microsoft SNDS (Outlook/MSN/Live) data is 24 hours old.<br><br>All table cells w/ <span style="color: red; font-size: 120%;">red</span> text can be clicked for removal instructions.<br><br>Any modifications to the main mtarep.yml configuration file will be picked up automatically by mtarep before it's subsequent collection run (according to the cron scheduled collection interval). The collector's cron scheduled collection interval is explained in more detail in the README for mtarep.<br><br></p>
               </div>
               <div class="tab-pane" id="tab2">
-                <p>After submitting a removal request, please click the acknowledge button at the bottom right of the listing's modal. This will generate an ack message containing the username and time of the ack and store it in redis. The ack is then displayed in place of the acknowledge button on the listing's modal. An acknowledgement will be cleared automatically once mtarep detects the issue is resolved.<br><br></p>
+                <p style="color: #949494; font-size: 120%;">After submitting a removal request, please click the acknowledge button at the bottom right of the listing's modal. This will generate an ack message containing the username and time of the ack and store it in redis. The ack is then displayed in place of the acknowledge button on the listing's modal. An acknowledgement will be cleared automatically once mtarep detects the issue is resolved.<br><br></p>
               </div>
               <div class="tab-pane" id="tab3">
-                <p>A <strong style="color:red">Red</strong> <strong>Highlighted Row Indicates One Of The Following Has Occurred</strong></p>
+                <p style="font-size: 120%;">A <span style="color: red;">Red </span>Highlighted Row Indicates One Of The Following Has Occurred</p>
                 <ul>
-                  <li>12+ Outlook/MSN/Live trap hits for the MTA in the last 24 hours</li>
-                  <li>Outlook/MSN/Live heavily filtered/blocked the MTA in the last 24 hours</li>
-                  <li>The MTA is listed at Spamhaus and/or Spamcop</li>
-                  <li>The MTA is being blocked by one or more major providers</li>
-                  <li>Return Path is listing a sender score lower than 60 for the MTA</li>
+                  <li style="color: #949494; font-size: 104%;">12+ Outlook/MSN/Live trap hits for the MTA in the last 24 hours</li>
+                  <li style="color: #949494; font-size: 104%;">Outlook/MSN/Live heavily filtered/blocked the MTA in the last 24 hours</li>
+                  <li style="color: #949494; font-size: 104%;">The MTA is listed at Spamhaus and/or Spamcop</li>
+                  <li style="color: #949494; font-size: 104%;">The MTA is being blocked by one or more major providers</li>
+                  <li style="color: #949494; font-size: 104%;">Return Path is listing a sender score lower than 60 for the MTA</li>
                 </ul>
                 <br>
-                <p>A <strong style="color:orange">Yellow</strong> <strong>Highlighted Row Indicates One Of The Following Has Occurred</strong></p>
+                <p style="font-size: 120%;">A <span style="color: orange;">Yellow </span>Highlighted Row Indicates One Of The Following Has Occurred</p>
                 <ul>
-                  <li>Outlook/MSN/Live intermittently filtered the MTA in the last 24 hours</li>
-                  <li>Return Path is listing a sender score between 60 and 70 for the MTA</li>
+                  <li style="color: #949494; font-size: 104%;">Outlook/MSN/Live intermittently filtered the MTA in the last 24 hours</li>
+                  <li style="color: #949494; font-size: 104%;">Return Path is listing a sender score between 60 and 70 for the MTA</li>
                 </ul>
               </div>
               <div class="tab-pane" id="tab4">
-                <strong style="color:black">No Score/Data</strong>
+                <p style="font-size: 120%;">No Score/Data</p>
                 <ul>
-                  <li>The MTA’s daily sending volume is too low. There is not enough data to report anything</li>
+                  <li style="color: #949494; font-size: 104%;">The MTA’s daily sending volume is too low. There is not enough data to report anything</li>
                 </ul>
                 <br>
-                <strong style="color:red">Red SNDS Filtering</strong>
+                <p style="font-size: 120%;"><span style="color: red;">Red </span>SNDS Filtering</p>
                 <ul>
-                  <li>Outlook/MSN/Live heavily filtered and/or blocked the MTA in the last 24 hours</li>
+                  <li style="color: #949494; font-size: 104%;">Outlook/MSN/Live heavily filtered and/or blocked the MTA in the last 24 hours</li>
                 </ul>
                 <br>
-                <strong style="color:orange">Yellow SNDS Filtering</strong>
+                <p style="font-size: 120%;"><span style="color: orange;">Yellow </span>SNDS Filtering</p>
                 <ul>
-                  <li>Outlook/MSN/Live intermittently filtered and/or deferred the MTA in the last 24 hours</li>
+                  <li style="color: #949494; font-size: 104%;">Outlook/MSN/Live intermittently filtered and/or deferred the MTA in the last 24 hours</li>
                 </ul>
                 <br>
               </div>
               <div class="tab-pane" id="tab5">
-                <p>Mtarep queries RBL lists according to the scheduled collection interval. checks our MTA IP addresses every 15 minutes against the list of RBLs below. There are many RBL lists and maintainers, but only a handful are widely referenced by internet and email service providers. Any modifications to this list can be done directly in the main mtarep.yml configuration file's rbls array collection, which will be picked up automatically by mtarep during it's subsequent collection run (according to your scheduled collection cron interval).<br><br>The collection cron interval is explained in more detail in the README for mtarep.</p>
+                <p style="color: #949494; font-size: 120%;">Mtarep queries RBL lists according to the scheduled collection interval. checks our MTA IP addresses every 15 minutes against the list of RBLs below. There are many RBL lists and maintainers, but only a handful are widely referenced by internet and email service providers. Any modifications to this list can be done directly in the main mtarep.yml configuration file's rbls array collection, which will be picked up automatically by mtarep during it's subsequent collection run (according to your scheduled collection cron interval).<br><br>The collection cron interval is explained in more detail in the README for mtarep.</p>
                 <br>
-                <h4 style="color: red;">RBL Lists</h4>
+                <p style="color: red; font-size: 140%;">RBL Lists</p>
                 <% rbl_list = @redis.lrange('rbls', 0, -1) %>
-                <p><%= rbl_list.join('<br>') %></p>
+                <p style="color: #949494; font-size: 120%;"><%= rbl_list.join('<br>') %></p>
+              </div>
+              <div class="tab-pane" id="tab6">
+                <p style="color: #949494; font-size: 120%;">The possible values in the Brightmail reputation service column are <span style="color: black;">Good, Neutral, and Bad.</span></p>
+                <ul>
+                  <li style="color: #949494; font-size: 104%;"><strong><span style="color: black;">Good:</span></strong> Brightmail has detected that only legitimate email has originated from the address</li>
+                  <li style="color: #949494; font-size: 104%;"><strong><span style="color: black;">Neutral:</span></strong> Brightmail data does not indicate a positive or negative reputation</li>
+                  <li style="color: #949494; font-size: 104%;"><strong><span style="color: red;">Bad:</span></strong> Brightmail has detected suspicious activity, such as spam or malicious code, originating from the address</li>
+                </ul>
+                <br>
               </div>
             </div>
           </div>
         </div>
-        <div class="span2"></div>
+        <div class="span1"></div>
       </div>
     </div>
 

@@ -49,7 +49,6 @@ get '/' do
   count = 0
   begin
     @assistance_links = settings.config_options['assistance_links']
-    @provider_block_strings = settings.config_options['provider_block_strings']
     @mta_redis_data_hash = {}
 
     @mta_keys.each do |ip|

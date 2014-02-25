@@ -56,8 +56,8 @@ provider_block_strings:
   earthlink: 'earthlink.net/block'
   verizon: 'www.verizon.net/whitelist'
   gmail: 'www.google.com/mail/help/bulk_mail.html'
-  cloudmark: 'Error Code: IPBL1000'
-  brightmail: 'ipremoval.sms.symantec.com'
+  bluetie: 'support.bluetie.com/rbl'
+  cloudmark: 'csi.cloudmark.com/reset-request'
 
 removal_links:
   aol: 'http://postmaster.aol.com/SupportRequest.Other.php'
@@ -71,6 +71,7 @@ removal_links:
   earthlink: 'http://support.earthlink.net/articles/email/email-blocked-by-earthlink.php'
   verizon: 'http://my.verizon.com/micro/whitelist/RequestForm.aspx?id=isp'
   gmail: 'http://support.google.com/mail/bin/request.py?&contact_type=msgdelivery'
+  bluetie: 'http://support.bluetie.com/rbl'
   cloudmark: 'https://csi.cloudmark.com/en/reset/'
   brightmail: 'http://ipremoval.sms.symantec.com/lookup/'
   zen.spamhaus.org: 'http://www.spamhaus.org/query/ip/'

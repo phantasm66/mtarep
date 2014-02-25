@@ -2,6 +2,7 @@
 require 'hosts'
 require 'rbls'
 require 'snds'
+require 'brightmail'
 require 'dns_worker'
 require 'securerandom'
 require 'error_logger'
@@ -18,6 +19,7 @@ module Collector
     include Collector::ProviderBlocks
     include Collector::Rbls
     include Collector::Snds
+    include Collector::Brightmail
 
     def pid_cleanup(active_pid, command)
       pid = nil
@@ -88,6 +90,7 @@ module Collector
           :senderscore => score,
           :sndscolor => snds[0],
           :sndstraps => snds[1],
+          :brightmail => brightmail_reputation(mta_data[:ip]),
           :provblocks => blocks,
           :listings => rbls[mta_data[:ip]]
         }
