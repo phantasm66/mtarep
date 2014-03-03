@@ -76,6 +76,7 @@ module Collector
           blocks_array = []
 
           blocks.each_pair do |provider, log|
+            log = log.gsub(/(<|>)/, '')
             id = SecureRandom.hex(13)
             redis.hmset(id, mta_data[:alias], log)
 
