@@ -26,7 +26,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand"><strong>mtarep - Reputation Reporting & Statistics Dashboard</strong></a>
+          <a class="brand"><strong>mtarep - Reputation Monitor</strong></a>
           <ul class="nav pull-right">
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img src="/bootstrap/img/list.png"></a>
@@ -47,7 +47,7 @@
         <div class="span12">
         <br>
         <br>
-        <table id="main-table" class="table table-bordered table-hover">
+        <table id="main-table" class="table table-bordered table-hover" style="border-style: solid; border-width: 6px; border-color: #393939;">
           <thead>
             <tr>
               <th style="background-color: white; font-size: 120%; text-align: center; border: 0;">
@@ -143,7 +143,7 @@
 
                           <div class="modal-body">
                             <h3><strong>SMTP rejection log</strong></h4>
-                            <p style="padding: 6px; color: #B96400; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;">
+                            <p style="padding: 6px; color: #CD7814; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;">
                             <font face="monaco"><%= sample_logline.to_a.flatten[1] %></font></p>
                             <h4><strong>blocked ip address: <%= mta_ip %></strong></h4>
 
@@ -172,10 +172,11 @@
                             <% if listing =~ /spamhaus/ %>
 
                               <% if @assistance_links['spamhaus'] %>
-                                <p><a style="color: red;" href="<%= @assistance_links['spamhaus'] %>" target="_blank"><u>spamhaus listing assistance</u></a></p>
+                                <p><a style="color: red;" href="<%= @assistance_links['spamhaus'] %>" target="_blank"><h3><u>spamhaus emergency steps</u></h3></a></p>
                               <% end %>
 
                               <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u>spamhaus listing lookup/info</u></a>
+                              <br>
                               <br>
                               <br>
                             <% elsif listing =~ /spamcop/ %>
@@ -207,7 +208,7 @@
 
                           <div class="modal-body">
                             <p>Symantec has listed <strong><%= mta_ip %></strong> due to a negative listing with the Brightmail reputation service. There are several methods Symantec uses for listing a mail server IP address. A negative listing with the Brightmail reputation service is the only one that can be mitigated via a removal request.<br><br><strong>Brightmail reputation service detail</strong></p>
-                            <p style="padding: 6px; color: #B96400; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;">
+                            <p style="padding: 6px; color: #CD7814; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;">
                             <font face="monaco">Brightmail has detected suspicious activity, such as spam or malicious code, originating from <%= mta_ip %></font></p>
 
                             <% if @assistance_links['brightmail'] %>
@@ -222,6 +223,7 @@
                       <% if redis_ack.nil? %>
                         <% removal_links.each_pair do |provider_name, removal_link| %>
                           <% next unless redis_field_value == provider_name %>
+                          <% next if redis_field_value =~ /spamhaus/ %>
                           <a href=<%= removal_links[provider_name] %> target="_blank"><h4><strong style="color: red;"><u>initiate a removal request</u></strong></h4></a>
                         <% end %>
 
