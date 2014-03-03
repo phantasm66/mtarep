@@ -180,7 +180,7 @@
                               <br>
                               <br>
                             <% elsif listing =~ /spamcop/ %>
-                              <p>Please visit <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u>spamcop</u></a> to view the details of the listing for ip address <strong style="color: red;"><%= mta_ip %></strong>.
+                              <p>Please visit <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u>spamcop</u></a> to view the details of the listing for ip address <strong style="color: red;"><%= mta_ip %></strong>
                               <br>
                               <br>
                               Spamcop listings expire within 12 to 24 hours. It's fairly difficult to convince them to remove the listing earlier than it's expiration, but you should try anyway. Spamcop listings result in rejections at AT&T operated domains (there are many) and several non-major domains.</p>
