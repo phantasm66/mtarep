@@ -36,6 +36,21 @@ Each issue modal contains an acknowledgement button that can be clicked once you
 
 Each column header in the web interface allows for rows sorting (eg: sort by rbl listings, microsoft SNDS filtering or trap hits, hostname, etc..)
 
+Rest Api
+--------
+Mtarep comes with a very basic REST api. I expect to add more functionality to the api as needed. At the moment, the api can only be queried for single host data. For example, to get mtarep data for a public fqdn of 'mta-test1.domain.tld', you could do something like this:
+```ruby
+require 'rest-client'
+require 'json'
+
+response = RestClient.get("http://username:password@mtarep.domain.tld/api/#{public_fqdn}")
+data_hash = JSON.parse(response)
+
+ => {"hostname"=>"mta-test1.domain.tld", "senderscore"=>"98", "sndscolor"=>"green", "sndstraps"=>"2", "brightmail"=>"good", "provblocks"=>"no blocks", "listings"=>"unlisted"}
+```
+
+A JSON blob of the requested public fqdn's mtarep data is returned.
+
 Graphing
 --------
 ![Alt text](screenshots/mtarep-graphs-example.png?raw=true)
