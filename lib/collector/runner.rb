@@ -46,7 +46,7 @@ module Collector
       pid_cleanup(options[:active_pid], options[:command])
 
       snds_data = snds_data(options[:snds_key])
-      redis = redis_connection(options[:redis_host])
+      redis = redis_connection(options[:redis_server])
 
       mta_map(options[:mta_map]).each do |mta_data|
         snds = []
@@ -102,7 +102,7 @@ module Collector
           new_redis_data = fields.to_a.flatten
           new_redis_data.each {|data| redis.rpush(mta_data[:ip], data)}
 
-          redis_clean_acks(options[:redis_host], fields, mta_data[:ip])
+          redis_clean_acks(options[:redis_server], fields, mta_data[:ip])
         rescue => error
           log_error('Problem encountered during a redis operation')
           log_error("Redis server returned: #{error}")

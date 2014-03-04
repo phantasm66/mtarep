@@ -21,5 +21,5 @@ run_collector({ :active_pid => Process.pid,
                 :ssh_user => config['ssh_user'],
                 :ssh_key => config['ssh_key'],
                 :maillog => config['maillog_path'],
-                :redis_host => config['redis_host'],
+                :redis_server => config['redis_server'],
                 :removal_links => config['removal_links'] })

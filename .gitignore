@@ -1,4 +1,7 @@
 check_mtarep.rb
+config/deploy.rb
+config/mtarep.cron
+config/mtarep.private
 config/config.ru
 config/mtarep.yml
 config/thin.yml

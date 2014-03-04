@@ -8,6 +8,7 @@ require 'sinatra'
 require 'digest/sha1'
 require 'redis'
 require 'yaml'
+require 'json'
 require 'net/https'
 require 'uri'
 require 'redis_worker'
@@ -39,10 +40,11 @@ end
 
 before do
   @mta_keys = []
-  @redis = redis_connection(settings.config_options['redis_host'])
+  @redis = redis_connection(settings.config_options['redis_server'])
   @graph_domains = settings.config_options['graph_domains']
+  @mta_map_config = mta_map(settings.config_options['mta_map'])
 
-  mta_map(settings.config_options['mta_map']).each {|hash| @mta_keys << hash[:ip]}
+  @mta_map_config.each {|hash| @mta_keys << hash[:ip]}
 end
 
 get '/' do
@@ -100,6 +102,7 @@ get '/graphs' do
     retry unless count > 5
   end
 
+  graph_keys.map! {|x| x.encode('UTF-16BE', :invalid=>:replace, :replace=>'?').encode('UTF-8')}
   graph_keys_new = graph_keys.clone
 
   graph_keys.each do |key|
@@ -173,5 +176,21 @@ post '/ack' do
     retry unless count > 5
   end
   redirect to('/')
+end
+
+get "/api/:fqdn" do
+  found = []
+  @mta_map_config.each {|x| found << x[:ip] if x[:fqdn] == params[:fqdn]}
+
+  begin
+    raise if found.empty?
+    response_data = @redis.lrange(found[0], 0, -1)
+
+    content_type :json
+    JSON.generate(Hash[*response_data])
+  rescue
+    content_type :json
+    JSON.generate({:message => "No mtarep data found for #{params[:fqdn]}"})
+  end
 end
 

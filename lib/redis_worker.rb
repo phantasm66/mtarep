@@ -6,18 +6,18 @@ module RedisWorker
 
   include ErrorLogger
 
-  def redis_connection(redis_host)
+  def redis_connection(redis_server)
     count = 0
 
     begin
-      connection = Redis.new(:host => redis_host)
+      connection = Redis.new(:host => redis_server)
       connection.ping
     rescue => error
       count += 1
       sleep 1
       retry unless count > 5
 
-      log_error("Connection error with: #{redis_host}")
+      log_error("Connection error with: #{redis_server}")
       log_error("Error returned: #{error}")
       exit
     end
@@ -25,8 +25,8 @@ module RedisWorker
     return connection
   end
 
-  def redis_clean_acks(redis_host, hash, ip)
-    redis = redis_connection(redis_host)
+  def redis_clean_acks(redis_server, hash, ip)
+    redis = redis_connection(redis_server)
 
     acks = redis.keys('ack-*')
     acked = acks.clone
