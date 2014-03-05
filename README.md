@@ -65,22 +65,28 @@ Each individual bar graph is calculated from midnight on the current day and con
 
 The mtarep graphing code will search your mtarep redis backend for HINCRBY based keys in the format of:
 ```lua
-20140208:expired
-20140208:fbl
-20140208:bounced
-20140208:sent
+mycompany:20140208:expired
+mycompany:20140208:fbl
+mycompany:20140208:bounced
+mycompany:20140208:sent
 ```
-*Where 20140208 is the current date*
+*Where '20140208' is the current date and 'mycompany' is some type of identifier (perhaps your sending domain, company name or client name?)*
 
 These redis keys should contain an incrementing total for each unique domain that has been sent, bounced, expired or feedback-loop received. The exact redis operation is [HINCRBY](http://redis.io/commands/hincrby).
 
 Using the [redis-rb](https://github.com/redis/redis-rb) ruby client you could do something like this:
 ```ruby
-key = [Time.now.strftime("%Y%m%d")]
+require 'redis'
+
+@redis = Redis.new(:host => 'your redis server')
+
+key = ['mycompany']
+key << Time.now.strftime("%Y%m%d")
 key << 'bounced'
+
 @redis.hincrby(key.join(':'), 'gmail.com', 1)
 ```
-The above code would increment a counter for each bounced email to 'gmail.com' under the redis key '20140208:bounced'. This could be accomplished by creating a custom redis output plugin with [Logstash](https://github.com/logstash/logstash) to filter and ship this data directly from your postfix mail logs to either a pubsub broker like [RabbitMQ](https://www.rabbitmq.com/) or perhaps even directly to your redis datastore.
+The above code would increment a counter for each bounced email to 'gmail.com' under the redis key 'mycompany:20140208:bounced'. This could be accomplished by creating a custom redis output plugin with [Logstash](https://github.com/logstash/logstash) to filter and ship this data directly from your postfix mail logs to either a pubsub broker like [RabbitMQ](https://www.rabbitmq.com/) or perhaps even directly to your redis datastore.
 
 Configuration
 -------------
