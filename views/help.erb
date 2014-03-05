@@ -40,9 +40,10 @@
               <li class="active"><a href="#tab1" data-toggle="tab"><strong>Overview</strong></a></li>
               <li class=""><a href="#tab2" data-toggle="tab"><strong>Web Interface</strong></a></li>
               <li class=""><a href="#tab3" data-toggle="tab"><strong>Graphing</strong></a></li>
-              <li class=""><a href="#tab4" data-toggle="tab"><strong>Configuration</strong></a></li>
-              <li class=""><a href="#tab5" data-toggle="tab"><strong>Current RBLs</strong></a></li>
-              <li class=""><a href="#tab6" data-toggle="tab"><strong>Brightmail Reputation</strong></a></li>
+              <li class=""><a href="#tab4" data-toggle="tab"><strong>REST Api</strong></a></li>
+              <li class=""><a href="#tab5" data-toggle="tab"><strong>Configuration</strong></a></li>
+              <li class=""><a href="#tab6" data-toggle="tab"><strong>Current RBLs</strong></a></li>
+              <li class=""><a href="#tab7" data-toggle="tab"><strong>Brightmail Reputation</strong></a></li>
             </ul>
             <div class="tab-content" style="color: #000000; padding-bottom: 9px; border-bottom: 1px solid #ddd;">
               <div class="tab-pane active" id="tab1">
@@ -62,6 +63,9 @@
 <p style="color: #D0D0D0; font-size: 120%;"><strong>The above code would increment a counter for each bounced email to 'gmail.com' under the redis key '20140208:bounced'. This could be accomplished by creating a custom redis output plugin with logstash to filter and ship this data directly from your postfix mail logs to either a pubsub broker like rabbitmq or perhaps even directly to your redis datastore.</strong></p>
               </div>
               <div class="tab-pane" id="tab4">
+              <p style="color: #D0D0D0; font-size: 120%;"><strong>Mtarep comes with a very basic REST api. I expect to add more functionality to the api as needed. At the moment, the api can only be queried for single host data.<br><br>For example, to retrieve mtarep data for a public fqdn of 'mta-test1.domain.tld', you could do something like this:<br></strong></p><p style="padding: 6px; color: #CD7814; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;"><font face="monaco">require 'rest-client'<br>require 'json'<br><br>response = RestClient.get("http://username:password@mtarep.domain.tld/api/#{public_fqdn}")<br>data_hash = JSON.parse(response)<br><br>=> {"hostname"=>"mta-test1.domain.tld", "senderscore"=>"98", "sndscolor"=>"green", "sndstraps"=>"2", "brightmail"=>"good", "provblocks"=>"no blocks", "listings"=>"unlisted"}</font></p><br><p style="color: #D0D0D0; font-size: 120%;"><strong>A JSON blob of the requested public fqdn's mtarep data is returned.</strong></p>
+              </div>
+              <div class="tab-pane" id="tab5">
                 <p style="color: #D0D0D0; font-size: 120%;"><strong>Mtarep comes with example configuration files for rackup (config.ru), thin (thin.yml) and mtarep itself (mtarep.yml). Please copy the example configs without the '.example' appendage and adjust each config according to your environment.<br><br>The individual mtarep.yml configuration file settings are as follows:</strong></p><br>
                 <p style="color: #D0D0D0; font-size: 140%;"><strong><i>error_log</i></strong></p>
                 <p style="padding: 6px; color: #CD7814; background-color: #495674; max-width: 720px; border: #9B9B9B 4px solid; border-radius:10px;"><font face="monaco">The absolute path to your main mtarep error log file. All directories in the path must already exist. If the error log file does not exist, it will be created.</font></p><br>
@@ -90,12 +94,12 @@
                 <p style="color: #D0D0D0; font-size: 140%;"><strong><i>assistance_links</i></strong></p>
                 <p style="padding: 6px; color: #CD7814; background-color: #495674; max-width: 720px; border: #9B9B9B 4px solid; border-radius:10px;"><font face="monaco">A YAML hash collection of any custom documentation you maintain that outlines steps your organization has for resolving a specific mtarep reported issue. These links are used in the modal of a clicked issue in mtarep.</font></p>
               </div>
-              <div class="tab-pane" id="tab5">
+              <div class="tab-pane" id="tab6">
                 <p style="color: #D0D0D0; font-size: 120%;"><strong>Mtarep is currently configured to check each monitored MTA ip address against the following RBL lists:</strong></p><br>
                 <% rbl_list = @redis.lrange('rbls', 0, -1) %>
                 <p style="padding: 6px; color: #CD7814; max-width: 220px; background-color: #495674; border: #9B9B9B 4px solid; border-radius:10px;"><font face="monaco"><%= rbl_list.join('<br>') %></font></p>
               </div>
-              <div class="tab-pane" id="tab6">
+              <div class="tab-pane" id="tab7">
                 <p style="color: #D0D0D0; font-size: 120%;"><strong>The possible values in the Brightmail reputation service column are:</strong>
                 <ul>
                   <li style="color: #D0D0D0; font-size: 104%;"><strong><span style="color: #90EE90;">Good:</span></strong>&nbsp;&nbsp;<strong>Brightmail has detected that only legitimate email has originated from the address</strong></li>
