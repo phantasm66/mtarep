@@ -38,7 +38,9 @@ Each column header in the web interface allows for rows sorting (eg: sort by rbl
 
 Rest Api
 --------
-Mtarep comes with a very basic REST api. I expect to add more functionality to the api as needed. At the moment, the api can only be queried for single host data. For example, to get mtarep data for a public fqdn of 'mta-test1.domain.tld', you could do something like this:
+Mtarep comes with a very basic REST api. I expect to add more functionality to the api as needed. At the moment, the api can only be queried for single host data.
+
+For example, to get mtarep data for a public fqdn of 'mta-test1.domain.tld', you could do something like this:
 ```ruby
 require 'rest-client'
 require 'json'
