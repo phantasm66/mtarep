@@ -1,15 +1,17 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-$:.unshift File.expand_path('lib')
-$:.unshift File.expand_path('lib/collector')
+libs = File.expand_path("../**/*", __FILE__)
+$:.unshift *Dir.glob(libs)
 
 require 'runner'
 require 'yaml'
 
 include Collector::Runner
 
-config = YAML.load_file('config/mtarep.yml')
+yaml_config = File.expand_path("../config/mtarep.yml", __FILE__)
+config = YAML.load_file(yaml_config)
+
 ENV['ERROR_LOG'] = config['error_log']
 
 run_collector({ :active_pid => Process.pid,
