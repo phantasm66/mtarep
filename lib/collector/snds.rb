@@ -25,6 +25,8 @@ module Collector
           response = http.get(uri.request_uri)
           response = response.body
         end
+
+        raise Exception, 'HTTPS call to snds returned nil:NilClass' if response.nil?
       rescue => error
         count += 1
         retry unless count > 5
@@ -33,14 +35,16 @@ module Collector
         log_error("Microsoft snds http query returned: #{error}")
       end
 
-      response.each_line do |line|
-        line = line.split(',')
-        ip = line[0]
-        color = line[6]
-        traps = line[10]
+      unless response.nil?
+        response.each_line do |line|
+          line = line.split(',')
+          ip = line[0]
+          color = line[6]
+          traps = line[10]
 
-        color = color.downcase unless color.nil?
-        snds_hash[ip] = [color, traps]
+          color = color.downcase unless color.nil?
+          snds_hash[ip] = [color, traps]
+        end
       end
 
       return snds_hash
