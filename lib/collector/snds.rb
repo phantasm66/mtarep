@@ -9,7 +9,7 @@ module Collector
     include ErrorLogger
 
     def snds_data(snds_key)
-      response = ''
+      response = nil
       snds_hash = {}
 
       url = "https://postmaster.live.com/snds/data.aspx?key=#{snds_key}"
@@ -26,25 +26,23 @@ module Collector
           response = response.body
         end
 
-        raise Exception, 'HTTPS call to snds returned nil:NilClass' if response.nil?
-      rescue => error
-        count += 1
-        retry unless count > 5
+        raise if response.nil?
 
-        log_error('Problem encountered while retrieving microsoft snds data')
-        log_error("Microsoft snds http query returned: #{error}")
-      end
-
-      unless response.nil?
         response.each_line do |line|
           line = line.split(',')
           ip = line[0]
           color = line[6]
           traps = line[10]
 
-          color = color.downcase unless color.nil?
+          color = color.downcase
           snds_hash[ip] = [color, traps]
         end
+      rescue => error
+        count += 1
+        retry unless count > 5
+
+        log_error('Problem encountered while retrieving microsoft snds data')
+        log_error("Microsoft snds http query returned: #{error}")
       end
 
       return snds_hash
