@@ -33,10 +33,10 @@ module DnsWorker
     reversed_ip = ip.split('.').reverse.join('.')
     response = resolver("#{reversed_ip}.#{query_host}")
 
-    if response.empty?
-      return response
-    else
+    if response.match(/^127\./)
       return query_host
+    else
+      return []
     end
   end
 
@@ -44,10 +44,10 @@ module DnsWorker
     reversed_ip = ip.split('.').reverse.join('.')
     response = resolver("#{reversed_ip}.score.senderscore.com")
 
-    if response.empty?
-      return 'no score'
-    else
+    if response.match(/^127\./)
       return response.split('.')[3]
+    else
+      return 'no score'
     end
   end
 end
