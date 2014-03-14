@@ -7,16 +7,21 @@ module DnsWorker
 
   include ErrorLogger
 
-  def resolver(name)
+  def resolver(name, option={})
     counter = 0
 
     begin
       Timeout.timeout(5) do
         results = Resolv.new.getaddress(name)
+
+        if option[:query_type] == 'rbldns'
+          raise Resolv::ResolvError unless results.match(/^127\./)
+        end
+
         return results
       end
     rescue Resolv::ResolvError
-      return []
+      return String.new
     rescue => error
       counter += 1
       sleep 1
@@ -25,29 +30,23 @@ module DnsWorker
       log_error("Problem encountered during a dns lookup for #{name}")
       log_error("DNS lookup returned: #{error}")
 
-      return []
+      return String.new
     end
   end
 
   def rbl_lookup(ip, query_host)
     reversed_ip = ip.split('.').reverse.join('.')
-    response = resolver("#{reversed_ip}.#{query_host}")
+    rbl_query = [reversed_ip, query_host].join('.')
+    response = resolver(rbl_query, {:query_type => 'rbldns'})
 
-    if response.match(/^127\./)
-      return query_host
-    else
-      return []
-    end
+    response.empty? ? response : query_host
   end
 
   def score_lookup(ip)
     reversed_ip = ip.split('.').reverse.join('.')
-    response = resolver("#{reversed_ip}.score.senderscore.com")
+    senderscore_query = [reversed_ip, 'score.senderscore.com'].join('.')
+    response = resolver(senderscore_query, {:query_type => 'rbldns'})
 
-    if response.match(/^127\./)
-      return response.split('.')[3]
-    else
-      return 'no score'
-    end
+    response.empty? ? 'no score' : response.split('.')[3]
   end
 end

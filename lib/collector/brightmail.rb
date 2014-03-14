@@ -21,8 +21,6 @@ module Collector
           http = Net::HTTP.new(uri.host, uri.port)
           response = http.get(uri.request_uri)
 
-          raise Exception unless response.body.match('entityRecord')
-
           json = JSON.parse(response.body)
           reputation = json['entityRecord']['rep']
         end
