@@ -34,18 +34,21 @@ module DnsWorker
     end
   end
 
-  def rbl_lookup(ip, query_host)
+  def query_host(ip, base_host)
     reversed_ip = ip.split('.').reverse.join('.')
-    rbl_query = [reversed_ip, query_host].join('.')
-    response = resolver(rbl_query, {:query_type => 'rbldns'})
+    host = [reversed_ip, base_host].join('.')
 
-    response.empty? ? response : query_host
+    return host
+  end
+
+  def rbl_lookup(ip, base_host)
+    response = resolver(query_host(ip, base_host), {:query_type => 'rbldns'})
+
+    response.empty? ? response : base_host
   end
 
   def score_lookup(ip)
-    reversed_ip = ip.split('.').reverse.join('.')
-    senderscore_query = [reversed_ip, 'score.senderscore.com'].join('.')
-    response = resolver(senderscore_query, {:query_type => 'rbldns'})
+    response = resolver(query_host(ip, 'score.senderscore.com'), {:query_type => 'rbldns'})
 
     response.empty? ? 'no score' : response.split('.')[3]
   end

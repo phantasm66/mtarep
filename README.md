@@ -100,7 +100,7 @@ The individual mtarep.yml configuration file settings are as follows:
 
 ***redis_server:***
 
-   The DNS resolvable hostname of your redis server. Your redis server will be accessed over the default port of 6379 and the primary 'db0' database. Currently non standard ports and redis databases are not supported.
+   The DNS resolvable hostname of your redis server. Your redis server will be accessed over the default port of 6379 and the primary 'db0' database. Currently non standard ports and multiple redis databases are not supported.
 
 ***snds_key:***
 
