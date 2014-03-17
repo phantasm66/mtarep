@@ -24,6 +24,8 @@ The following data is collected and displayed for each postfix MTA you report on
 
 All the data is collected and inserted into a redis data store whenever the collector completes a run. The collector (collector.rb) can be scheduled via cron. The sinatra webapp (app.rb) handles generating the HTML and retrieving the data from redis.
 
+Please note that the Microsoft SNDS data is only available for the previous day. Everyday at 3am EDT a process begins that aggregates data for the previous day from across various systems at Windows Live Hotmail. Due to the vast volume of data handled this process can take a few hours, so data may not be available for a few hours after 3am EDT.
+
 Web Interface
 -------------
 ![Alt text](screenshots/mtarep-webui-example.png?raw=true)
