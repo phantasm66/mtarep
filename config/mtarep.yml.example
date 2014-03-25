@@ -34,7 +34,6 @@ rbls:
  - dnsbl-3.uceprotect.net
  - multi.surbl.org
  - psbl.surriel.com
- - ubl.unsubscore.com
  - zen.spamhaus.org
 
 mta_map:
@@ -87,7 +86,6 @@ removal_links:
   psbl.surriel.com: 'http://psbl.org/listing'
   cidr.bl.mcafee.com: 'http://www.mcafee.com/threat-intelligence/ip/default.aspx?ip='
   db.wpbl.info: 'http://www.wpbl.info/cgi-bin/detail.cgi?ip='
-  ubl.unsubscore.com: 'http://ls.lashback.com/blacklist/'
 
 assistance_links:
   hotmail: 'http://path.to.documented.steps.to/help/with.this.hotmail.form'
