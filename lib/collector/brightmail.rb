@@ -24,9 +24,9 @@ module Collector
           json = JSON.parse(response.body)
           reputation = json['entityRecord']['rep']
         end
-      rescue JSON::ParserError
+      rescue JSON::ParserError => error
         log_error('Unparsable JSON returned from symantec/brightmail reputation data query')
-        log_error("Brightmail reputation JSON data returned: #{response.body}")
+        log_error("JSON parser error returned: #{error}")
       rescue => error
         count += 1
         retry unless count > 2

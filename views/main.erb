@@ -183,7 +183,7 @@
                               <p>Please visit <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u>spamcop</u></a> to view the details of the listing for ip address <strong style="color: red;"><%= mta_ip %></strong>
                               <br>
                               <br>
-                              Spamcop listings expire within 12 to 24 hours. It's fairly difficult to convince them to remove the listing earlier than it's expiration, but you should try anyway. Spamcop listings result in rejections at AT&T operated domains (there are many) and several non-major domains.</p>
+                              Spamcop listings expire within 12 to 24 hours. It's virtually impossible to convince spamcop to remove the listing earlier than it's expiration, but you are welcome to try. Spamcop listings result in rejections at AT&T operated domains (there are many) and several non-major domains.</p>
                             <% elsif listing =~ /(mcafee|wpbl)/ %>
                               <p>Please visit <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u><%= listing %></u></a> to view details and submit a removal request for ip address <strong style="color: red;"><%= mta_ip %></strong>.</p>
                             <% else %>
@@ -223,11 +223,13 @@
                       <% if redis_ack.nil? %>
                         <% removal_links.each_pair do |provider_name, removal_link| %>
                           <% next unless redis_field_value == provider_name %>
-                          <% next if redis_field_value =~ /spamhaus/ %>
+                          <% next if redis_field_value =~ /spam(haus|cop)/ %>
                           <a href=<%= removal_links[provider_name] %> target="_blank"><h4><strong style="color: red;"><u>initiate a removal request</u></strong></h4></a>
                         <% end %>
 
-                        <p>click the acknowledge button once you have requested a block removal</p>
+                        <% unless redis_field_value =~ /spamcop/ %>
+                          <p>click the acknowledge button once you have requested a block removal</p>
+                        <% end %>
                         </div>
 
                         <div class="modal-footer">

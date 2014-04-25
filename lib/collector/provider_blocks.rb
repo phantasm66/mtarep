@@ -38,7 +38,6 @@ module Collector
         retry unless count > 2
 
         log_error("Problem encountered for #{options[:mta]} during ssh and remote maillog parsing")
-        log_error("Error returned: #{error}")
       end
 
       loglines = loglines.split("\n").reverse
