@@ -77,6 +77,7 @@ removal_links:
   bl.spamcop.net: 'http://www.spamcop.net/w3m?action=checkblock&ip='
   b.barracudacentral.org: 'http://www.barracudacentral.org/lookups'
   bl.mailspike.net: 'http://mailspike.org/anubis/lookup.html'
+  bl.score.senderscore.com: 'https://www.senderscore.org/blacklistlookup/'
   bl.spamcannibal.org: 'http://www.spamcannibal.org/cannibal.cgi'
   cbl.abuseat.org: 'http://cbl.abuseat.org/lookup.cgi'
   dnsbl-1.uceprotect.net: 'http://www.uceprotect.net/en/rblcheck.php'
