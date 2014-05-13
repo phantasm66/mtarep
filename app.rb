@@ -140,7 +140,7 @@ end
 get '/version' do
   def latest_version
     begin
-      uri = URI.parse('https://raw.github.com/phantasm66/mtarep/master/VERSION')
+      uri = URI.parse('https://raw.githubusercontent.com/phantasm66/mtarep/master/VERSION')
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
