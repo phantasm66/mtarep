@@ -150,7 +150,7 @@ The individual mtarep.yml configuration file settings are as follows:
 
 ***provider_block_strings:***
 
-   A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs for particular rejection text patterns. The rejection patterns for several major email providers are already included in the mtarep.yml.example file.
+   A YAML hash collection of external email provider names (the key) and a string (the value) that indicates a provider is blocking your MTA. These key/values are used by mtarep to search your remote MTA mail logs for particular rejection text patterns. The values for these are regular expressions. The rejection patterns for several major email providers are already included in the mtarep.yml.example file.
 
 ***removal_links:***
 
