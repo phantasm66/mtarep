@@ -4,7 +4,6 @@ require 'error_logger'
 
 module Collector
   module Hosts
-
     include DnsWorker
     include ErrorLogger
 
@@ -12,10 +11,21 @@ module Collector
       mta_data = []
 
       if hostname_map.class == Hash
-        hostname_map.each_pair do |alias_name, fqdn|
+        hostname_map.each_pair do |shortname, host_info|
+          fqdn = "#{shortname}.bluestatedigital.com"
           results = resolver(fqdn)
-          mta_data << {:alias => alias_name, :ip => results, :fqdn => fqdn}
+          mta_data << {
+            :shortname => shortname,
+            :ssh_host => host_info['ssh_host'],
+            :maillog_path => host_info['maillog_path'],
+            :ip => results,
+            :fqdn => fqdn
+          }
         end
+
+      ###
+      ### why the fuck did i add this ?
+      ###
       elsif hostname_map.class == Array
         hostname_map.each do |fqdn|
           results = resolver(fqdn)

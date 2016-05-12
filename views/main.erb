@@ -33,7 +33,6 @@
               <ul class="dropdown-menu">
                 <li><a href="/" style="color: #cccccc;">Home</a></li>
                 <li><a href="/help" style="color: #cccccc;">Help</a></li>
-                <li><a href="/graphs" style="color: #cccccc;">Graphs</a></li>
                 <li><a href="/version" style="color: #cccccc;">Version</a></li>
               </ul>
             </li>
@@ -52,6 +51,8 @@
             <tr>
               <th style="background-color: white; font-size: 120%; text-align: center; border: 0;">
               <a rel="tooltip" data-placement="bottom" data-original-title="Sort By MTA Hostname">Public DNS Hostname</a></th>
+              <th style="background-color: white; font-size: 120%; text-align: center; border: 0;">
+              <a rel="tooltip" data-placement="bottom" data-original-title="Sort By DNS Match Results">Matched DNS</a></th>
               <th style="background-color: white; font-size: 120%; text-align: center; border: 0;">
               <a rel="tooltip" data-placement="bottom" data-original-title="Sort By Return Path Sender Score">Sender Score</a></th>
               <th style="background-color: white; font-size: 120%; text-align: center; border: 0;">
@@ -73,6 +74,7 @@
               <% provblocks = mta_fields_hash['provblocks'] %>
               <% senderscore = mta_fields_hash['senderscore'] %>
               <% brightmail = mta_fields_hash['brightmail'] %>
+              <% dns_match = mta_fields_hash['dns'] %>
 
               <% if senderscore == 'no score' %>
                 <% senderscore = 100 %>
@@ -88,13 +90,13 @@
                 <% sndstraps = sndstraps.to_i %>
               <% end %>
 
-              <% if senderscore < 60 %>
-                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
-              <% elsif sndstraps >= 12 %>
-                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% if sndstraps >= 10 %>
+                <tr class="warning">
               <% elsif color == 'red' %>
-                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+                <tr class="warning">
               <% elsif brightmail == 'bad' %>
+                <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
+              <% elsif dns_match == 'no' %>
                 <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
               <% elsif listings =~ /(spamhaus|spamcop)/ %>
                 <tr class="error" rel="tooltip" data-placement="bottom" data-original-title="Alert: Deliverability Issues!">
@@ -184,8 +186,6 @@
                               <br>
                               <br>
                               Spamcop listings expire within 12 to 24 hours. It's virtually impossible to convince spamcop to remove the listing earlier than it's expiration, but you are welcome to try. Spamcop listings result in rejections at AT&T operated domains (there are many) and several non-major domains.</p>
-                            <% elsif listing =~ /(mcafee|wpbl)/ %>
-                              <p>Please visit <a href=<%= removal_links[redis_field_value]+mta_ip %> target="_blank"><u><%= listing %></u></a> to view details and submit a removal request for ip address <strong style="color: red;"><%= mta_ip %></strong>.</p>
                             <% else %>
                               <p>Please lookup ip address <strong style="color: red;"><%= mta_ip %></strong> on the <a href=<%= removal_links[redis_field_value] %> target="_blank"><u><%= listing %></u></a> list query page and submit a removal request.</p>
                             <% end %>
@@ -224,7 +224,12 @@
                         <% removal_links.each_pair do |provider_name, removal_link| %>
                           <% next unless redis_field_value == provider_name %>
                           <% next if redis_field_value =~ /spam(haus|cop)/ %>
-                          <a href=<%= removal_links[provider_name] %> target="_blank"><h4><strong style="color: red;"><u>initiate a removal request</u></strong></h4></a>
+
+                          <% if provider_name == 'hotmail' %>
+                            <a><h4><strong style="color: red;"><u><%= provider_name %>'s removal process is complex. please follow the steps listed in the removal assistance link above.</strong></h4></a>
+                          <% else %>
+                            <a href=<%= removal_links[provider_name] %> target="_blank"><h4><strong style="color: red;"><u>initiate a removal request</u></strong></h4></a>
+                          <% end %>
                         <% end %>
 
                         <% unless redis_field_value =~ /spamcop/ %>

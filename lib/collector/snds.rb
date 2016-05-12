@@ -5,7 +5,6 @@ require 'error_logger'
 
 module Collector
   module Snds
-
     include ErrorLogger
 
     def snds_data(snds_key)
@@ -15,9 +14,8 @@ module Collector
       url = "https://postmaster.live.com/snds/data.aspx?key=#{snds_key}"
       uri = URI.parse(url)
 
-      count = 0
       begin
-        Timeout.timeout(10) do
+        Timeout.timeout(30) do
           http = Net::HTTP.new(uri.host, uri.port)
           http.use_ssl = true
           http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -26,7 +24,7 @@ module Collector
           response = response.body
         end
 
-        raise if response.nil?
+        raise Errno::ECONNRESET if response.nil?
 
         response.each_line do |line|
           line = line.split(',')
@@ -37,10 +35,13 @@ module Collector
           color = color.downcase
           snds_hash[ip] = [color, traps]
         end
-      rescue => error
-        count += 1
-        retry unless count > 5
-
+      rescue Timeout::Error,
+             Errno::EINVAL,
+             Errno::ECONNRESET,
+             EOFError,
+             Net::HTTPBadResponse,
+             Net::HTTPHeaderSyntaxError,
+             Net::ProtocolError => error
         log_error('Problem encountered while retrieving microsoft snds data')
         log_error("Microsoft snds http query returned: #{error}")
       end

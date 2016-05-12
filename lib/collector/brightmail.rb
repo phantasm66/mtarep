@@ -6,7 +6,6 @@ require 'error_logger'
 
 module Collector
   module Brightmail
-
     include ErrorLogger
 
     def brightmail_reputation(ip)
@@ -15,7 +14,6 @@ module Collector
       url = "http://www.symantec.com/s/wl-brightmail/ip/#{ip}.json"
       uri = URI.parse(url)
 
-      count = 0
       begin
         Timeout.timeout(10) do
           http = Net::HTTP.new(uri.host, uri.port)
@@ -27,9 +25,13 @@ module Collector
       rescue JSON::ParserError => error
         log_error('Unparsable JSON returned from symantec/brightmail reputation data query')
         log_error("JSON parser error returned: #{error}")
-      rescue => error
-        count += 1
-        retry unless count > 2
+      rescue Timeout::Error,
+             Errno::EINVAL,
+             Errno::ECONNRESET,
+             EOFError,
+             Net::HTTPBadResponse,
+             Net::HTTPHeaderSyntaxError,
+             Net::ProtocolError => error
 
         log_error('Problem encountered while retrieving symantec/brightmail reputation data')
         log_error("Brightmail reputation http query returned: #{error}")

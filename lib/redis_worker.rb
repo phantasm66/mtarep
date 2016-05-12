@@ -3,7 +3,6 @@ require 'redis'
 require 'error_logger'
 
 module RedisWorker
-
   include ErrorLogger
 
   def redis_connection(redis_server)
@@ -38,8 +37,11 @@ module RedisWorker
       next unless array[1] == ip
 
       hash.each_pair do |k, v|
-        issues = v.split(',')
-        issues.each do |issue|
+        v.split(',').each do |issue|
+          if k == 'brightmail' && v == 'bad'
+            acked.delete(ack) if ack =~ /#{k}/
+          end
+
           acked.delete(ack) if issue =~ /#{array[0]}/
         end
       end

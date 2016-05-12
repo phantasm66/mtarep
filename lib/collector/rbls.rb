@@ -3,7 +3,6 @@ require 'dns_worker'
 
 module Collector
   module Rbls
-
     include DnsWorker
 
     def rbl_listings(ip, rbls)
